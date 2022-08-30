@@ -1,0 +1,115 @@
+\documentclass[a4paper,12pt]{report}
+%    \renewcommand{\baselinestretch}{1.6}      % interline spacing
+%
+% \includeonly{}
+%
+%			PREAMBOLO
+%
+\usepackage[a4paper]{geometry}
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{epsfig}
+\usepackage[english]{babel}
+\usepackage{setspace}
+\usepackage{tesi}
+
+% per le accentate
+\usepackage[utf8]{inputenc}
+%
+\newtheorem{myteor}{Teorema}[section]
+%
+\newenvironment{teor}{\begin{myteor}\sl}{\end{myteor}}
+%
+%Path relative to the main .tex file 
+\graphicspath{ {./images/} }
+%
+%			TITOLO
+%
+\begin{document}
+\title{Design and development of an assurance methodology for the security in Iot/Edge systems}
+\author{Matteo CAVAGNINO}
+\dept{Corso di Laurea in Informatica} 
+\anno{2021-2022}
+\matricola{961707}
+\relatore{Prof. Claudio ARDAGNA}
+\correlatore{Dr. Nicola BENA}
+%
+%        \submitdate{month year in which submitted to GPO}
+%		- date LaTeX'd if omitted
+%	\copyrightyear{year degree conferred (next year if submitted in Dec.)}
+%		- year LaTeX'd (or next year, in December) if omitted
+%	\copyrighttrue or \copyrightfalse
+%		- produce or don't produce a copyright page (false by default)
+%	\figurespagetrue or \figurespagefalse
+%		- produce or don't produce a List of Figures page
+%		  (false by default)
+%	\tablespagetrue or \tablespagefalse
+%		- produce or don't produce a List of Tables page
+%		  (false by default)
+% 
+%			DEDICA
+%
+\beforepreface
+\prefacesection{}
+        {\hfill \Large {\sl dedicato a \dots}}
+% 
+%			PREFAZIONE
+%
+\prefacesection{Preface}
+hkjafgyruet.
+%
+%
+%			ORGANIZZAZIONE
+\section*{Organization of the thesis}
+\label{organizzazione}
+The thesis is organized as follows:
+\begin{itemize}
+\item in Chapter 1 ....
+\end{itemize}
+%
+%			RINGRAZIAMENTI
+%
+\prefacesection{Acknowledgements}
+asdjhgftry.
+\afterpreface
+% 
+% 
+%			CAPITOLO 1: Introduzione
+\chapter{Introduction}
+\label{cap1}                        % riferire al capitolo con \ref{cap1}
+
+
+
+\chapter{State Of The Art}
+\label{cap2}
+\include{StateOfTheArt}
+
+
+\chapter{Methodology}
+\label{cap3}
+
+\chapter{Experiments}
+\label{cap4}
+
+\chapter{Conclusions}
+\label{cap5}
+
+
+
+
+
+%
+%			BIBLIOGRAFIA
+%
+\begin{thebibliography}{00}
+
+\include{BibItems}
+
+\end{thebibliography}
+% 
+\end{document}
+
+
+ 
