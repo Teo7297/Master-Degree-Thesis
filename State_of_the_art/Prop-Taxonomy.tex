@@ -1,0 +1,361 @@
+\subsubsection{Properties Taxonomy}
+The NIST officially published several technical and non-technical capabilities that an IoT system’s manufacturer should consider; It should be noted that the following security requirements have been officially classified under one of the three parts of the CIA triad by the NIST.
+
+Device identification, which is the capability to identify the IoT device for multiple purposes and in multiple ways to meet organizational requirements, is composed of the following requirements:
+
+\begin{description}
+    \item[Identifier Management Support] Ability for device identification. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to uniquely identify the IoT device logically.
+            \item Ability to uniquely identify a remote IoT device.
+            \item Ability for the device to support a unique device ID (e.g., to allow it to be linked to the person or process assigned to use the IoT device).
+        \end{itemize}
+    \item[Device Authentication Support] Ability to support local or interfaced device authentication. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability for the IoT device to identify itself as an authorized entity to other devices.
+            \item Ability to verify the identity of an IoT device.
+        \end{itemize}
+    \item[Physical Identifiers] Ability to add a unique physical identifier at an external or internal location on the device authorized entities can access.
+\end{description}
+
+On the other hand, the device configuration is defined as The capability to configure the IoT device through logical or physical interfaces to meet organizational requirements and includes the following requirements:
+\begin{description}
+    \item[Logical Access Privilege Configuration] Ability for only authorized entities to apply logical access privilege settings within the IoT device and configure logical access privilege as described in Logical Access to Interfaces.
+    \item[Authentication and Authorization Configuration] Ability for only authorized entities to configure IoT device authentication policies and limitations as described in Logical Access to Interfaces.
+    \item[Interface Configuration] Ability for only authorized entities to configure aspects related to the device’s interfaces as described in Logical Access to Interfaces.
+    \item[Display Configuration] Ability to configure content to be displayed on a device.
+    \item[Device Configuration Control] Ability to change configurations on the IoT device based on operational events as described in Device Security and Cybersecurity Event Awareness.
+    \begin{itemize}
+        \item Ability to change the device’s software configuration settings.
+        \item Ability for authorized entities to restore the device to a secure configuration defined by an authorized entity.
+        \item Configuration settings for use with the Device Configuration capability including, but not limited to:
+        \begin{itemize}
+            \item Ability for authorized entities to configure the cryptography use itself, such as choosing a key length.
+            \item Ability to configure any remote update mechanisms to be either automatically or manually initiated for update downloads and installations.
+            \item Ability to enable or disable notification when an update is available and specify who or what is to be notified.
+        \end{itemize}
+    \end{itemize}
+\end{description}
+
+Every IoT system revolves around data, and protecting it is the core focus of cybersecurity; the NIST defines data protection as the capability to protect IoT device data to meet organizational requirements. Therefore, it is important to satisfy as many of the following requirements as possible to achieve a high level of data protection.
+
+\begin{description}
+    \item[Cryptography Capabilities and Support] Ability for the IoT device to use cryptography for data protection. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to execute cryptographic mechanisms of appropriate strength and performance.
+            \item Ability to obtain and validate certificates.
+            \item Ability to verify digital signatures.
+            \item Ability to run hashing algorithms.
+            \item Ability to perform authenticated encryption algorithms.
+            \item Ability to compute and compare hashes.
+        \end{itemize}
+    \item[Cryptographic Key Management] Ability to manage cryptographic keys securely:
+        \begin{itemize}
+            \item Ability to generate key pairs.
+            \item Ability to store encryption keys securely.
+            \item Ability to change keys securely.
+        \end{itemize}
+    \item[Secure Storage] Ability for the IoT device, or tools used through the IoT device interface, to enable secure device storage. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to support encryption of data at rest.
+            \begin{itemize}
+                \item Ability to cryptographically store passwords at rest, as well as device identity and other authentication data.
+                \item Ability to support data encryption and signing to prevent data from being altered in device storage.
+            \end{itemize}
+            \item Ability to secure data in device storage
+                \begin{itemize}
+                    \item Ability to secure data stored locally on the device.
+                    \item Ability to secure data stored in remote storage areas (e.g., cloud, server, etc.).
+                    \item Ability to utilize separate storage partitions for system and user data.
+                \end{itemize}
+            \item Ability to “sanitize” or “purge” specific or all data in the device.
+        \end{itemize}
+        
+    \item[Secure Transmission] Ability to secure data transmissions sent to and from the IoT device. Elements that may be necessary:
+    \begin{itemize}
+        \item Ability to configure the cryptographic algorithm to protect data in transit.
+        \begin{itemize}
+            \item Ability to support trusted data exchange with a specified minimum strength cryptography algorithm.
+            \item Ability to support data encryption and signing to prevent data from being altered in transit.
+        \end{itemize}
+        \item Ability to utilize one or more capabilities to protect the data it transmits from unauthorized access and modification.
+        \item Ability to use cryptographic means to validate the integrity of data transmitted.
+    \end{itemize}
+\end{description}
+
+Another important aspect is the security of logical access to the system's interfaces, which is the ability to require authentication to or identify the IoT device and to establish authentication and identification configuration and display requirements.
+
+\begin{description}
+    \item[Authentication Support] Ability to support authentication methods.
+    \begin{itemize}
+        \item Ability for the IoT device to require authentication prior to connecting to the device.
+        \item Ability for the IoT device to support and require appropriate authentication
+        \begin{itemize}
+            \item Ability for the IoT device to require authentication prior to connecting to the device.
+            \item Ability for the IoT device to support a second, or more, authentication method(s) through an out of band path such as temporary passwords or other one-use logon credentials, third-party credential checks, biometrics, text messages, hard tokens and manufacturer proprietary methods
+        \end{itemize}
+        \item Ability for the IoT device to hide or mask authentication information during authentication process.
+        \item Ability for the IoT device to support a second, or more, authentication method(s) through an out-of-band path such as: Temporary passwords or other one-use credentials; Third-party credential checks; Biometrics; Text messages; Hard Tokens; etc.
+    \end{itemize}
+    
+    \item[Authentication Configuration] Ability to require, or not require, authentication to, and/or identification of, the IoT device, and to establish authentication and identification configuration and display requirements. Elements that may be necessary:
+    \begin{itemize}
+        \item Ability to set and change authentication configurations, policies and limitations settings for the IoT device
+        \begin{itemize}
+            \item Ability to set the time period for how long the device will remain locked after an established configurable limit of unsuccessful login attempts has been met.
+            \item Ability to disable or lock access to the device after an established number of unsuccessful login attempts.
+            \item Ability to display and/or report the previous date and time of the last successful login authentication.
+            \item Ability to automatically disable accounts for the IoT device after an establish period of inactivity
+            \item Ability to support automatic logout of inactive accounts after a configurable established time period.
+            \item Ability to support automatic removal of temporary, emergency and other special use accounts after an established time period.
+        \end{itemize}
+        \item Ability to authenticate external users and systems
+        \item Ability to revoke their access.
+    \end{itemize}
+    
+    \item[System Use Notification Support] Ability to support system use notifications.
+    \begin{itemize}
+        \item Ability to display to IoT device users an organizationally-defined system use notification message or banner prior to successful IoT device authentication. (e.g., the message or banner would provide privacy and security notices consistent with applicable federal laws, Executive Orders, directives, policies, regulations, standards, and guidance).
+        \item Ability to create an organizationally-defined system use notification message or banner to be displayed on the IoT device
+        \begin{itemize}
+            \item Ability to edit an existing IoT device display.
+            \item Ability to establish the maximum size (in characters, bytes, etc.) of the available device display.
+        \end{itemize}
+        \item Ability to keep the notification message or banner on the device screen until the device user actively acknowledges and agrees to the usage conditions
+    \end{itemize}
+    
+    \item[Authorization Support] Ability to restrict all unauthorized interactions.
+    \begin{itemize}
+        \item Ability to identify authorized users and processes.
+        \item Ability to differentiate between authorized and unauthorized users (physical and remote).
+    \end{itemize}
+    
+    \item[Authentication And Identity Management] Ability to establish access to the IoT device to perform organizationally-defined user actions without identification or authentication.
+    
+    
+    \item[Role Support And Management] Ability to establish unique, privileged, organization-wide, and other types of IoT device user accounts. Elements that may be necessary:
+    \begin{itemize}
+        \item Ability to create unique IoT device user accounts.
+        \item Ability to assign roles to IoT device user accounts.
+        \item Ability to identify unique IoT device user accounts.
+        \item Ability to support a hierarchy of logical access privileges for the IoT device based on roles (e.g., admin, emergency, user, local, temporary, etc.).
+        \begin{itemize}
+            \item Ability to establish user accounts to support role-based logical access privileges.
+            \item Ability to administer user accounts to support role-based logical access privileges.
+            \item Ability to use organizationally-defined roles to define each user account’s access and permitted device actions.
+            \item Ability to support multiple levels of user/process account functionality and roles for the IoT device.
+        \end{itemize}
+        \item Ability to apply least privilege to user accounts (i.e., to ensure that the processes operate at privilege levels no higher than necessary to accomplish required functions).
+        \begin{itemize}
+            \item Ability to create additional processes, roles (e.g., admin, emergency, temporary, etc.) and accounts as necessary to achieve least privilege.
+            \item Ability to apply least privilege settings within the device (i.e., to ensure that the processes operate at privilege levels no higher than necessary to accomplish required functions).
+            \item Ability to limit access to privileged device settings that are used to establish and administer authorization requirements.
+            \item Ability for authorized users to access privileged settings.
+        \end{itemize}
+        \item Ability to support organizationally-defined actions for the IoT device.
+        \begin{itemize}
+            \item Ability to create organizationally-defined accounts that support privileged roles with automated expiration conditions.
+            \item Ability to establish organizationally-defined user actions for accessing the IoT device and/or device interface.
+            \item Ability to enable automation and reporting of account management activities.
+            \item Ability to assign access to IoT device audit controls to specific roles or organizationally-defined personnel.
+            \item Ability to control access to IoT device audit data.
+            \item Ability to identify the user, process or device requesting access to the audit/accountability information (i.e., to ensure only authorized users and/or devices have access).
+            \item Ability to establish conditions for shared/group accounts on the IoT device.
+            \item Ability to administer conditions for shared/group accounts on the IoT device.
+            \item Ability to restrict the use of shared/group accounts on the IoT device according to organizationally-defined conditions.
+        \end{itemize}
+        \item Ability to implement dynamic access control approaches (e.g., service-oriented architectures) that rely on:
+        \begin{itemize}
+            \item run-time access control decisions facilitated by dynamic privilege management.
+            \item organizationally-defined actions to access/use device.
+        \end{itemize}
+        \item Ability to allow information sharing capabilities based upon the type and/or role of user attempting to share the information.
+        \item Ability to restrict access to IoT device software, hardware, and data based on user account roles, used with proper authentication of the identity of the user to determine type of authorization.
+    \end{itemize}
+    
+    
+    \item[Limitations on Device Usage] Ability to establish restrictions for how the device can be used. Elements that may be necessary:
+    \begin{itemize}
+        \item Ability to establish pre-defined restrictions for information searches within the device.
+        \item Ability to establish limits on authorized concurrent device sessions for:
+        \begin{itemize}
+            \item User accounts
+            \item Roles
+            \item Groups
+            \item Dates
+            \item Times
+            \item Locations
+            \item Manufacturer established parameters
+        \end{itemize}
+    \end{itemize}
+    
+    
+    \item[External Connections] Ability to support external connections. Elements that may be necessary:
+    \begin{itemize}
+        \item Ability to securely interact with authorized external, third-party systems.
+        \item Ability to allow for the user/organization to establish the circumstances for when information sharing from the device and/or through the device interface will be allowed and prohibited.
+        \item Ability to establish automated information sharing to approved identified parties/entities.
+        \item Ability to identify when the external system meets the required security requirements for a connection.
+        \item Ability to establish secure communications with internal systems when the device is operating on external networks.
+    \end{itemize}
+    
+    \item[Interface Control] Ability to establish controls for the connections made to the IoT device. Elements that may be necessary:
+    \begin{itemize}
+        \item Ability to establish requirements for remote access to the IoT device and/or IoT device interface including:
+        \begin{itemize}
+            \item Usage restrictions
+            \item Configuration requirements
+            \item Connection requirements
+            \item Manufacturer established requirement
+        \end{itemize}
+        \item Ability to restrict use of IoT device components (e.g., ports, functions, microphones, video).
+        \item Ability to logically or physically disable any local and network interfaces that are not necessary for the core functionality of the device.
+        \item Ability to restrict updating actions to authorized entities.
+        \item Ability to restrict access to the cybersecurity state indicator to authorized entities.
+        \item Ability to restrict use of IoT device services.
+        \item Ability to enforce the established local and remote access requirements.
+        \item Ability to prevent external access to the IoT device management interface.
+        \item Ability to control the IoT device’s logical interface (e.g., locally or remotely).
+        \item Ability to change IoT device logical interface(s).
+        \item Ability to control device responses to device input.
+        \item Ability to control output from the device.
+        \item Ability to support wireless technologies needed by the organization (e.g., Microwave, Packet radio (UHF/VHF), Bluetooth, Manufacturer defined)
+        \item Ability to support communications technologies (including but not limited to):
+        \begin{itemize}
+            \item IEEE 802.11
+            \item Bluetooth
+            \item Ethernet
+            \item Manufacturer defined
+        \end{itemize}
+        \item Ability to establish and configure IoT device settings for wireless technologies including authentication protocols (e.g., EAP/TLS, PEAP).
+    \end{itemize}
+\end{description}
+    
+    Given the intrinsic dynamicity of IoT systems and devices, software updates are frequent, and support mechanisms may need additional security properties. These requirements refer to the ability to update IoT device software and support mechanisms for such updates.
+    \begin{description}
+        \item[Update Capabilities] Ability to update the IoT device software within the device and/or through the IoT device interface. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to update the software by authorized entities only using a secure and configurable mechanism.
+            \item Ability to identify the current version of the organizational audit policies and procedures governing the software update.
+            \item Ability to restrict software installations to only authorized individuals or processes.
+            \item Ability to restrict software changes/uninstallations to only authorized individuals or processes.
+            \item Ability to verify software updates come from valid sources using an effective method (e.g., digital signatures, checksums, certificate validation, etc).
+        \end{itemize}
+        
+        \item[Update Application Support] Ability to update the device’s software through remote (e.g., network download) and/or local (e.g., removable media) means
+        \begin{itemize}
+            \item If software updates are delivered and applied automatically:
+            \begin{itemize}
+                \item Ability to verify and authenticate any update before installing it
+                \item Ability to enable or disable updating
+            \end{itemize}
+        \end{itemize}
+    \end{description}
+    
+    
+    %% skipping cybersecurity awareness %%
+    
+    Last but not least important is the device's security, defined as the capability to secure the IoT device to meet organizational requirements.
+    
+    \begin{description}
+        \item[Secure Execution] Ability to protect the execution of code on the device. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to enforce organizationally-defined execution policies.
+            \begin{itemize}
+                \item Ability to execute code in confined virtual environments.
+                \item Ability to separate IoT device processes into separate execution domains.
+            \end{itemize}
+            \item Ability to separate the levels of IoT device user functionality.
+            \item Ability to authorize various levels of IoT device functionality.
+        \end{itemize}
+        
+        
+        \item[Secure Communication] Ability to securely initiate and terminate communications with other devices. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to enforce traffic flow policies.
+            \item Ability to utilize standardized protocols.
+            \item Ability to establish network connections.
+            \item Ability to terminate network connections (e.g., automatically based on organizationally-defined parameters).
+            \item Ability to de-allocate TCP/IP address/port pairings.
+            \item Ability to establish communications channels.
+            \item Ability to secure the communications channels.
+            \item Ability to interface with DNS/DNSSEC.
+            \item Ability to store and process session identifiers.
+            \item Ability to identify and track sessions with identifiers.
+        \end{itemize}
+        
+        \item[Secure Resource Usage] Ability to securely utilize system resources and memory. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to support shared system resources.
+            \begin{itemize}
+                \item Ability to release resources back to the system.
+                \item Ability to separate user and process resources use.
+            \end{itemize}
+            \item Ability to manage memory address space assigned to processes.
+            \item Ability to enforce access to memory space through the kernel.
+            \item Ability to prevent a process from accessing memory space of another process.
+            \item Ability to enforce configured disk quotas.
+            \item Ability to continue operation when associated networks are unavailable (e.g., a smart smoke detector must still go off when a fire occurs even if it is not attached to the associated network).
+            \item Ability to provide sufficient resources to store and run the operating environment (e.g., operating systems, firmware, applications).
+            \item Ability to utilize file compression technologies (e.g., to provide denial of service protection).
+        \end{itemize}
+        
+        
+        \item[Device Integrity] Ability to protect against unauthorized changes to hardware and software. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to perform security compliance checks on system components.
+            \item Ability to detect unauthorized hardware and software components.
+            \item Ability to take organizationally-defined actions when unauthorized hardware and software components are detected (e.g., disallow a flash drive to be connected even if a USB port is present).
+            \item Ability to store the operating environment (e.g., firmware image, software, applications) in read-only media (e.g., Read Only Memory).
+        \end{itemize}
+        
+        \item[Secure Device Operation] Ability to operate securely and safely. Elements that may be necessary:
+        \begin{itemize}
+            \item Ability to keep an accurate internal system time.
+            \item Ability to define various operational states.
+            \item Ability to support various modes of IoT device operation with more restrictive operational states.
+            \begin{itemize}
+                \item “travel mode” for transit.
+                \item “safe mode” for operation when some or all network security is unavailable.
+                \item Others as determined necessary based on the purpose and goals for the IoT device.
+            \end{itemize}
+            \item Ability to define differing failure types.
+            \item Ability to fail in a secure state.
+            \item Ability to disable operations and/or functionality in the event of security violations.
+            \item Ability to restrict components/features of the IoT device (e.g., ports, functions, protocols, services, etc.) in accordance with organizationally-defined policies.
+            \item Ability to sense the environment and securely (i.e., preserving confidentiality, integrity, and availability of the device and its data) interface with the environment, either directly or through the IoT system. Examples include:
+            \begin{itemize}
+                \item Emergency shutoff mechanism
+                \item Emergency lighting mechanism
+                \item Fire protection mechanism
+                \item Temperature and humidity mechanism
+                \item Water damage protection mechanism
+                \item Manufacturer defined capability
+            \end{itemize}
+        \end{itemize}
+        
+        
+    \end{description}
+    
+    
+    Moreover, Nasiri et al. [] defined a series of security requirements that manufacturers should consider (and develop) when designing IoT systems. These requirements are a high-level summary of the above that could be useful while showcasing examples of systems’ design. Although the research refers to healthcare IoT systems, many properties are still relevant for any kind of IoT system.
+    
+    \begin{description}
+        \item[Identification and authentication] Identification guarantees the identity of all the entities before permitting them to interact with the resources of the IoT system. Authentication is the process of confirming the identity of a person or device before using the system resources. Devices and application authentication can prove that the interacting system is not an adversary and that data shared in networks is legal.
+        
+        \item[authorization (access control)] After user identity verification, access rights or privileges to resources should be determined so that different users can only access the resources required based on their tasks.
+
+        \item[privacy] Privacy means that secrets and personal data of users should not be disclosed without consent. Therefore, the IoT system should be in accordance with privacy policies allowing users to control their private data.
+
+        \item[accountability] In a health IoT system, accountability should ensure that the organization or individuals are obliged to be answerable or responsible for their actions in case of theft or abnormal event.
+
+        \item[non-repudiation] Non-repudiation ensures that someone cannot deny an action that has already been done. It enables the users to prove the occurrence or non-occurrence of an event.
+
+        \item[auditing] Auditing is the ability of a system to track and monitor actions continuously. All user activities should be recorded in sequential order, such as system login time and data modification.
+        
+        \item[data freshness] Data freshness means that data should be recent, ensuring that no old messages are replayed.
+
+        
+
+    \end{description}
+    
