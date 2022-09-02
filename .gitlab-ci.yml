@@ -1,0 +1,13 @@
+stages:
+  - build
+
+compile_pdf:
+  image: aergus/latex
+  stage: build
+  script:
+    - latexmk --shell-escape -pdf Main.tex
+  artifacts:
+    paths:
+      - Main.pdf
+  rules:
+    - when: manual
