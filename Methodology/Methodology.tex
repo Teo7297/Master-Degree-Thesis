@@ -1,0 +1,79 @@
+The recertification process is triggered when specific security conditions are met after a system's update; the components of the such process need to adapt to the new approach, and for the current step this thesis is taking, they will be modelled as follows:
+
+\section{Attributes}
+As for the State-of-the-art approaches, properties will still be modelled using attributes that define them at a lower level; more specifically, in the proposed approach, attributes define micro-properties (see properties paragraph). An attribute A is now modelled as a pair \((\hat{A}, [value_{min}, value_{max}])\) where \(\hat{A}\) is the abstract attribute and \(value_{i}\) is a possible value of A. It should be noted that the range of possible values is considered sorted by relevance, from the less relevant to the most relevant. For example, the value of the response time of a device is more relevant the lower it is; contrary, the value of a storage size is more relevant the bigger it is.
+
+The score range of an attribute should be decided by an expert person having knowledge of the system and the context; such range should be balanced, setting the lowest score corresponding to the lowest relevant valid value and vice-versa.
+The following linear mapping (mapping that maintains a constant ratio between points) operation allows mapping values between two ranges, in this case, values and scores:
+
+\[q = \left \{ (p - A) \times \frac{D - C}{B - A} + C \bigm| [A, B] \in \mathbb{N} \wedge [C, D] \in \mathbb{N}  \right \} \]
+
+Considering the range of valid attribute values from A to B, the range of scores from C to D, and the actual attribute value p, the mapping allows computation of the corresponding score value q.
+A linear mapping requires two operations: a scaling operation to make the ranges the same size and an offset operation to align the ranges. Since scaling is always relative to the origin, the first step is to shift the range [A, B] to the origin by subtracting A from p; next, scale p by the ratio of the range sizes (D-C)/(B-A). Finally, shift this value to the start of the [C, D] range by adding C, resulting in the equation (ref). By rearranging the terms of the equation, it is possible to extract the scale and offset factors that compose it:
+
+\[ scale = \frac{D - C }{B - A} \]
+\[offset = -A \times \frac{D - C}{B - A} + C\]
+\[q = \left ( p \times scale \right ) + offset\]
+
+This equation maps the attribute's values range to the scores range spreading the values evenly (e.g., “equal importance” expressed with W[0] = 1/n, W[1] = 1/n, …, W[n]= 1/n). If the attribute's values are not numerical, they should be pre-emptively mapped to a list of indices; the indices list should then be used instead of the attribute's values. For example, for the micro-property Interface Control (ref), it is necessary to have a list of supported communication technologies that could include IEEE 802.11, Bluetooth and Ethernet connections; such a list might be mapped with an index list [1,2,3] where each index represents one of the elements.
+
+The mapping also allows the system to compute the minimum values that each attribute of each micro-property needs to have to release a certificate with the minimum effort. Such values should then be gathered with a simple getter function.
+
+\[ComputeMinValues([a_1, \dots , a_n], threshold)\]
+\[GetMinValue(aj) \rightarrow {value_a}_j\]
+
+\section{Properties}
+The old properties are now referred to as micro-properties, and they have been organized into three categories referred to as macro-properties. Micro-properties are now modelled as a pair \(\left (\hat{p}, \left \{  (a_1, value), \dots , (a_n, value)\right \} \right )\) 
+where \(\hat{p}\) is the abstract micro-property and \(\left ( a_i ,value \right )\) is a pair representing an attribute of the property and its value.
+
+Macro-properties are intended to regroup micro-properties that influence similar aspects of the system; more specifically, every micro-property contributes to one of the macro-properties, namely, Confidentiality, Integrity and Availability. Macro-properties have a specific function in the proposed approach, helping with the micro-properties score attribution; since the thresholds will be based on the macro-properties, every micro-property's score will influence its macro-property final weighted score.
+
+A macro-property of the system is then formalized as a triple \\ \( \left ( \hat{P}, \left \{(p_1, score), \dots , (p_n, score )\right \}, wscore \right ) \)
+where \(\hat{P}\) is the abstract macro-property, \( \left (p_i, score \right ) \) is a pair representing a micro-property and its score, and wscore is the total weighted score of the macro-property. The weight determining the final result should depend on the context. 
+
+
+
+
+\section{Trigger}
+The trigger is a component detecting security changes in the system, evaluating them and acting in case these changes should impact crucial security properties. The trigger should also have continuous access to the system's information and certificates to detect changes accurately. The framework should access such changes through a \textit{Changes} function: 
+
+\[Changes() \rightarrow \left \{ \left ( p_j, \left \{ a_k \right \} \right ) \right \} \]
+
+Where \(p_j\) is a micro-property of the system and \( \left \{a_k \right \} \) is the set of specific attributes impacted by the update.
+
+Such a function includes multiple background operations that the system has to deal with; these functionalities should probably include a monitoring framework for change detection. The monitoring should be invoked automatically every time a system (or context) update occurs. It should then compare the updated changes with the security properties and their attributes; any change over a security property should be immediately added to the Changes function output list. Moreover, the trigger component should also be notified about the availability of new changes.
+
+
+\section{Evidence Collection Model}
+
+Evidence collection is the process that, given a system and a property, gathers evidence proving the system holds such property through a series of tests. Such tests are now modelled as a tuple \( \left ( \hat{p}, \left (a_j, value_j, c_j, \left \{ cnd_k \right \} \right ) \right ) \)  where \( \hat{p} \) is the micro-property to test, \(a_j\) is an attribute of the micro-property, 
+\(value_j\) is the expected value of the attribute, cj is the code to execute, and \( \left \{ cndk \right \} \) is the set of conditions that need to be satisfied by the test execution.
+
+The evidence collection model is finally defined as a set of elements, one for each micro-property, modelled as \(  \left \{ \left \{ t_j \right \} {_{\hat{p}_i}} \right \} {_{\hat{P}_j}} \); where \( \hat{P}_j \) is a macro-property,  \( \hat{p}_i \) is a micro-property, \(a_j\) is an attribute of the micro-property, and \(t_j\) is the test to evaluate such an attribute.
+
+
+\section{Certification Model Definition}
+Once the trigger component starts the process by providing the system changes information, an important component that needs to be used for the recertification is the set of old certificates \(\mathcal{C}\); they contain all the demonstrated properties with their score and collected evidence prior to the update. Therefore, the proposed framework is expected to provide a function to obtain the certification model for the updated system; such function is formalized as follows:
+
+
+
+Once the new certification model is computed, it will be possible to call the Execute function that will execute the tests on the system based on the given certification model returning the new certificate if all the requirements are satisfied.
+
+
+The resulting certification model is defined as 
+\(\mathcal{M} = \left ( \left ( P_1, P_2, P_3 \right ), \mathcal{E} \right )\) where \(P_1\) is the Confidentiality macro-property, \(P_2\) is the Integrity macro-property and \(P_3\) is the Availability macro-property, and \( \mathcal{E} \) is the evidence collection model.
+ 
+The framework should be able to call the \textit{Execute} function using the certification model to deliver a new ephemeral certificate.
+
+\[Ephemeral(\mathcal{C}, system_{t+1}) \rightarrow {\mathcal{M}}_{t+1} \]
+
+Where \( \mathcal{C} = {c_0, \dots , c_t} \) and \(c_i\) is the certificate released at time \(i\); each certificate is modelled as a set of pairs \( (p, \{e_j\}) \) where \(p\) is a micro-property with the set of evidences supporting it.
+
+\[ Execute(\mathcal{M}_{t+1}) \rightarrow \mathcal{C} \cup \{c_{t+1}\} \]
+The system will finally be attributed a new certificate that will complement all the previously obtained ones.
+
+
+\section{Assumptions}
+
+For the next chapters, it is essential to clarify all  the major assumptions made during the design phase of the proposed certification process. As described in chapter \ref{cap2}, the current efforts in the IoT world are directed toward highly distributed systems (Edge computing) that involve some central computing nodes (Cloud computing). Therefore, when referring to IoT systems in the next chapters, it will be implied that the system will be composed of a Cloud layer, an Edge layer and an IoT layer. We note that the ToC model defined in chapter \ref{cap2} is still valid and has not been considered in this thesis work for simplicity, although in future, it could be modelled differently to better suit the new frameworks. Furthermore, it should be noted that this thesis' focus is on maintaining the certification's validity during the system's life cycle, mainly after some configuration change. Hence, when dealing with examples in the future chapters, it will be assumed that every system has already been fully certified with a standard certification model (e.g. Common Criteria) at the start of its functions. The proposed re-certification process should be aware of a threshold indicating the number of changes a system has to go through before the process is triggered. Such a threshold should be preemptively tested and precisely studied, possibly in the manual certification process, as it depends entirely on the context. It will be assumed that this value is known and irrelevant in future examples. There is also a major assumption in current standards that needs to be removed to apply the proposed solution; such assumption is to know a priori all the properties, attributes and mechanisms of the system. Only a part needs to be known; the rest should be found or inferred in some non-intrusive and lightweight manner. The risk with such an assumption is to debilitate the chain of trust and reduce the quality of the certification; if an attribute is discovered to have an invalid value, the entire certificate might be invalidated..
+A couple of assumptions need to be made regarding the proposed certification model. Specifically, the trigger component is assumed to have access to the system's information, such as the old certificates; it is also assumed that the trigger has the capabilities to compute the system's changes over properties and their attributes. Another important point is the assumption of having an expert person knowing how to precisely balance the score values over the attributes given the knowledge of the system and the environment where it is deployed.
