@@ -1,23 +1,23 @@
 
 
 \section{Traditional Certification Frameworks Composition}
-Modern certification frameworks rely upon several components defining how the process is executed and how the results should look. Below is a detailed list of the major pillars of certification frameworks with their fundamental functionalities as underlined by Anisetti et al. [anisetti2022multi][anisetti2017semi].
+Modern certification frameworks rely upon several components defining how the process is executed and how the results should look. Below is a detailed list of the major pillars of certification frameworks with their fundamental functionalities as underlined by Anisetti et al. \cite{anisetti2017semi}\cite{anisetti2022multi}.
 
 \subsection{Non-Functional Properties}
-For the certification process of a system, it is important to establish some requirements that can be functional or non-functional preemptively, usually this is done during an initial risk assessment process. As stated in [TROVA UN ALTRA SOURCE QUESTO E DA WIKIPEDIA]: "broadly, functional requirements define what a system is supposed to do, and non-functional requirements define how a system is supposed to be", meaning that non-functional requirements focus on the system itself instead of what the system produces in output; once a requirement is proven to be satisfied by the system, it becomes a non-functional property of the same, and it can be expressed as follows: ⟨name, {(attribute, value), (attribute, value)}⟩. A property is composed of pairs "attribute-value" where the attributes are essential sub-properties that define the strength of the property.
+For the certification process of a system, it is important to establish some requirements that can be functional or non-functional preemptively, usually this is done during an initial risk assessment process. As stated by Chen et al. \cite{chen2013verification}: "broadly, functional requirements define what a system is supposed to do, and non-functional requirements define how a system is supposed to be", meaning that non-functional requirements focus on the system itself instead of what the system produces in output; once a requirement is proven to be satisfied by the system, it becomes a non-functional property of the same, and it can be expressed as follows: ⟨name, {(attribute, value), (attribute, value)}⟩. A property is composed of pairs "attribute-value" where the attributes are essential sub-properties that define the strength of the property.
 
 In other words, non-functional properties describe the system's capabilities and are usually grouped under the categories defined by the CIA triad: i) Confidentiality, ii) Integrity and iii) Availability. The CIA triad is an organizational model designed to guide information storing policies; its three parts are cybersecurity's three most crucial components.
 
 These properties are considered abstract because they represent generic security requirements and provide no information on how to achieve them. Instead, they are used to define concrete security properties. 
 
-As defined by Anisetti et al. in [web services], a concrete security property is formally defined as follows:
-A concrete security property, denoted p, is a pair (pˆ,A)\footnote{TUTTE LE FORMULE NELLO STATO DELL ARTE SONO DA SISTEMARE}, where p.pˆ is an abstract property and p.A is a set of class attributes specifying the threats the service proves to counteract or the specific characteristics of the security function implemented by the service.
+As defined by Anisetti et al. \cite{anisetti2013test}, a concrete security property is formally defined as follows:
+A concrete security property, denoted \(p\), is a pair \( ( \hat{p}, A) \), where \(\hat{p}\) is an abstract property and \(A\) is a set of class attributes specifying the threats the service proves to counteract or the specific characteristics of the security function implemented by the service.
 
-The NIST defined these components as follows:
+The NIST defined these components as follows \cite{pub2005minimum}:
 \begin{description}
-    \item[Confidentiality] Preserving authorized restrictions on information access and disclosure, including means for protecting personal privacy and proprietary information. (NIST)
-    \item[Integrity] Guarding against improper information modification or destruction, and includes ensuring information non-repudiation and authenticity.(NIST)
-    \item[Availability] Ensuring timely and reliable access to and use of information.(NIST)
+    \item[Confidentiality] Preserving authorized restrictions on information access and disclosure, including means for protecting personal privacy and proprietary information.
+    \item[Integrity] Guarding against improper information modification or destruction, and includes ensuring information non-repudiation and authenticity.
+    \item[Availability] Ensuring timely and reliable access to and use of information.
 
 \end{description}
 
@@ -30,7 +30,7 @@ Availability guarantees reliable access to the information; it is best ensured b
 \input{State_of_the_art/Prop-Taxonomy}
 
 \subsection{Non-Functional Mechanisms}
-For a non-functional property to be proven, a non-functional mechanism, in the form of ⟨name, {(attribute, value), (attribute, value)}⟩, must be implemented to execute the certification process under specific configurations. Moreover, the property is what the process needs to verify, and the mechanism is the tool the system offers to test such property[10]; the verification is usually done through tests in the form of ⟨mechanism, (code to execute, expected results)⟩. Finally, it is important to note that the mechanisms need to be described in the system's documentation; this allows the accredited laboratory to analyze and test them during the manual review phases.
+For a non-functional property to be proven, a non-functional mechanism, in the form of \( ( name, \{ attribute, value \} )\), must be implemented to execute the certification process under specific configurations. Moreover, the property is what the process needs to verify, and the mechanism is the tool the system offers to test such property \cite{anisetti2017semi}; the verification is usually done through tests in the form of \\ \( (mechanism, (codde to execute, expected results))\). Finally, it is important to note that the mechanisms need to be described in the system's documentation; this allows the accredited laboratory to analyze and test them during the manual review phases.
 
 
 \subsection{Target Of Certification}
@@ -60,7 +60,7 @@ The bootstrapping phase includes the installation and configuration of the devic
 
 During the operation phase, the device/system provides its intended functionalities and should always be kept under a monitoring process. The monitoring is crucial to find new vulnerabilities and issues in the system. When a new vulnerability is found, and the manufacturer issues an update, rarely is a re-certification not issued due to the complexity of the analysis of the changes. Moreover, the security level and label are updated during a re-certification process.
 
-The decommissioning phase represents the end of the lifecycle of the system and includes the certificate revocation. This phase is also crucial because the devices composing the system could have stored sensitive information, and this phase's sole purpose is to make such information inaccessible.
+The decommissioning phase represents the end of the lifecycle of the system and includes the certificate revocation. This phase is also crucial because the devices composing the system could have stored sensitive information, and this phase's sole purpose is to make such information inaccessible \cite{surveyIOT}.
 
 Typically, a certification process for Cloud services consists of a collaborative effort between four entities: i) a service provider who develops the service that needs to be certified, ii) a cloud provider supporting the service's certification, iii) a CA responsible for the definition of the requirements and the methodology and iv) an accredited lab to carry out the system evaluation. The problem of such an approach resides in the fact that continuous context changes can rapidly invalidate the assigned certificates, and without proper context testing techniques, it is necessary to re-certificate the whole service every time. The framework that M. Anisetti et al. proposed addressed this issue by constantly verifying the possessed certifications against the context changes to prevent unnecessary revocations and re-certifications.
 
@@ -77,7 +77,7 @@ Labelling schemes exist to straightforwardly inform the user about the security 
 
 \end{itemize}
 
-Even though the importance of labels is mostly tied to commercial purposes [12], perhaps, they could also be read by the Certification Authorities to have a quicker overview of the system's mechanisms and capabilities. In state-of-the-art schemes, labels are ignored or poorly used, but they might play a fundamental role in future schemes.
+Even though the importance of labels is mostly tied to commercial purposes \cite{baldini2016security}, perhaps, they could also be read by the Certification Authorities to have a quicker overview of the system's mechanisms and capabilities. In state-of-the-art schemes, labels are ignored or poorly used, but they might play a fundamental role in future schemes.
 
 
 

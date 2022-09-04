@@ -1,12 +1,22 @@
 The recertification process is triggered when specific security conditions are met after a system's update; the components of the such process need to adapt to the new approach, and for the current step this thesis is taking, they will be modelled as follows:
 
+\section{The scoring system}
+Before introducing the main components of the certification scheme, it is important to introduce the concept of score; the score value is assigned to properties and attributes based on their values, the system's purpose and the context. The weighted sum of all the properties scores determines the certificate's strength; additionally, for the certificate to be valid, such a sum must reach a pre-determined threshold. Experts decide the score values and the thresholds with the help of taxonomies.
+
+
 \section{Attributes}
-As for the State-of-the-art approaches, properties will still be modelled using attributes that define them at a lower level; more specifically, in the proposed approach, attributes define micro-properties (see properties paragraph). An attribute A is now modelled as a pair \((\hat{A}, [value_{min}, value_{max}])\) where \(\hat{A}\) is the abstract attribute and \(value_{i}\) is a possible value of A. It should be noted that the range of possible values is considered sorted by relevance, from the less relevant to the most relevant. For example, the value of the response time of a device is more relevant the lower it is; contrary, the value of a storage size is more relevant the bigger it is.
+As for the state-of-the-art approaches, properties will still be modelled using attributes that define them at a lower level; more specifically, in the proposed approach, attributes define micro-properties (see properties paragraph). An attribute \(a\) is now modelled as a pair \((\hat{a}, [value_{min}, value_{max}])\) where \(\hat{a}\) is the abstract attribute and \(value_{i}\) is a possible value of \(a\). It should be noted that the range of possible values is considered sorted by relevance, from the less relevant to the most relevant. For example, the value of the response time of a device is more relevant the lower it is; contrary, the value of a storage size is more relevant the bigger it is.
 
 The score range of an attribute should be decided by an expert person having knowledge of the system and the context; such range should be balanced, setting the lowest score corresponding to the lowest relevant valid value and vice-versa.
-The following linear mapping (mapping that maintains a constant ratio between points) operation allows mapping values between two ranges, in this case, values and scores:
+The linear mapping (mapping that maintains a constant ratio between points) operation in figure \ref{eqn:mapping} allows mapping values between two ranges, in this case, values and scores.
+
+\begin{figure}[h]
+
 
 \[q = \left \{ (p - A) \times \frac{D - C}{B - A} + C \bigm| [A, B] \in \mathbb{N} \wedge [C, D] \in \mathbb{N}  \right \} \]
+\caption{Values to score mapping}
+\label{eqn:mapping}
+\end{figure}
 
 Considering the range of valid attribute values from A to B, the range of scores from C to D, and the actual attribute value p, the mapping allows computation of the corresponding score value q.
 A linear mapping requires two operations: a scaling operation to make the ranges the same size and an offset operation to align the ranges. Since scaling is always relative to the origin, the first step is to shift the range [A, B] to the origin by subtracting A from p; next, scale p by the ratio of the range sizes (D-C)/(B-A). Finally, shift this value to the start of the [C, D] range by adding C, resulting in the equation (ref). By rearranging the terms of the equation, it is possible to extract the scale and offset factors that compose it:
@@ -15,7 +25,7 @@ A linear mapping requires two operations: a scaling operation to make the ranges
 \[offset = -A \times \frac{D - C}{B - A} + C\]
 \[q = \left ( p \times scale \right ) + offset\]
 
-This equation maps the attribute's values range to the scores range spreading the values evenly (e.g., “equal importance” expressed with W[0] = 1/n, W[1] = 1/n, …, W[n]= 1/n). If the attribute's values are not numerical, they should be pre-emptively mapped to a list of indices; the indices list should then be used instead of the attribute's values. For example, for the micro-property Interface Control (ref), it is necessary to have a list of supported communication technologies that could include IEEE 802.11, Bluetooth and Ethernet connections; such a list might be mapped with an index list [1,2,3] where each index represents one of the elements.
+This equation maps the attribute's values range to the scores range spreading the values evenly (e.g., “equal importance” expressed with W[0] = 1/n, W[1] = 1/n, \dots , W[n]= 1/n). If the attribute's values are not numerical, they should be pre-emptively mapped to a list of indices; the indices list should then be used instead of the attribute's values. For example, for the micro-property Interface Control (ref), it is necessary to have a list of supported communication technologies that could include IEEE 802.11, Bluetooth and Ethernet connections; such a list might be mapped with an index list [1,2,3] where each index represents one of the elements.
 
 The mapping also allows the system to compute the minimum values that each attribute of each micro-property needs to have to release a certificate with the minimum effort. Such values should then be gathered with a simple getter function.
 
@@ -35,6 +45,7 @@ where \(\hat{P}\) is the abstract macro-property, \( \left (p_i, score \right ) 
 
 
 \section{Trigger}
+\label{trigger}
 The trigger is a component detecting security changes in the system, evaluating them and acting in case these changes should impact crucial security properties. The trigger should also have continuous access to the system's information and certificates to detect changes accurately. The framework should access such changes through a \textit{Changes} function: 
 
 \[Changes() \rightarrow \left \{ \left ( p_j, \left \{ a_k \right \} \right ) \right \} \]
@@ -77,3 +88,50 @@ The system will finally be attributed a new certificate that will complement all
 
 For the next chapters, it is essential to clarify all  the major assumptions made during the design phase of the proposed certification process. As described in chapter \ref{cap2}, the current efforts in the IoT world are directed toward highly distributed systems (Edge computing) that involve some central computing nodes (Cloud computing). Therefore, when referring to IoT systems in the next chapters, it will be implied that the system will be composed of a Cloud layer, an Edge layer and an IoT layer. We note that the ToC model defined in chapter \ref{cap2} is still valid and has not been considered in this thesis work for simplicity, although in future, it could be modelled differently to better suit the new frameworks. Furthermore, it should be noted that this thesis' focus is on maintaining the certification's validity during the system's life cycle, mainly after some configuration change. Hence, when dealing with examples in the future chapters, it will be assumed that every system has already been fully certified with a standard certification model (e.g. Common Criteria) at the start of its functions. The proposed re-certification process should be aware of a threshold indicating the number of changes a system has to go through before the process is triggered. Such a threshold should be preemptively tested and precisely studied, possibly in the manual certification process, as it depends entirely on the context. It will be assumed that this value is known and irrelevant in future examples. There is also a major assumption in current standards that needs to be removed to apply the proposed solution; such assumption is to know a priori all the properties, attributes and mechanisms of the system. Only a part needs to be known; the rest should be found or inferred in some non-intrusive and lightweight manner. The risk with such an assumption is to debilitate the chain of trust and reduce the quality of the certification; if an attribute is discovered to have an invalid value, the entire certificate might be invalidated..
 A couple of assumptions need to be made regarding the proposed certification model. Specifically, the trigger component is assumed to have access to the system's information, such as the old certificates; it is also assumed that the trigger has the capabilities to compute the system's changes over properties and their attributes. Another important point is the assumption of having an expert person knowing how to precisely balance the score values over the attributes given the knowledge of the system and the environment where it is deployed.
+
+
+
+\section{A Simple Example}
+A simple contextual example will be illustrated below to visualise the proposed idea better, always referring to the assumptions described above. The following example shows how a specific situation could be handled using the proposed idea and will be used as a reference in the next sections:
+
+Consider a smart city environment, specifically a traffic lights network, and assume that the moment a temporary traffic light is added to such network (e.g. for some road works with x hours expected duration), the system needs a quick re-validation of its security certificate to grant the correct functioning of the network. Where a "classic" standard approach would be too time intensive for something with such a short duration, the proposed idea would solve the issue in a much faster way. 
+
+First, the process should uncover the properties and attributes that changed; a couple of such properties could be the "non-repudiation" and the "data freshness" properties. Once the properties and their attributes have been tested, the process will convert them into a weighted score value; if the score is higher than the pre-established threshold, the certificate can be released. A monitoring process could also be involved and deployed to ensure the correct functioning of the street lights at operation time.
+
+
+\section{Ephemeral Certification Process}
+Chapter \ref{cap2} shows that previous iterations of certification frameworks dealt with non-functional properties, attributes and mechanisms, assuming to know them when needed. This approach was valid in Cloud environments because all the required properties to be certified were manually pre-established and specified during a preparation phase before the certification execution. However, the process implied a rather large overhead when certifying a whole new system or issuing a recertification process after a small configuration change. In Cloud environments, a slow process is acceptable due to the small number of changes a Cloud system usually has to go through and the high accuracy requirements. On the other hand, IoT environments are highly dynamic, unique and continuously subject to small configuration and patch changes making this approach no longer feasible due to the high overhead each certification process would introduce and the resource cost, especially in the manual preparation phase.
+
+As described in chapter \ref{cap2}, a certification process is usually made of four main steps: i) definition of the non-functional properties ii) definition of the certification target and of the mechanisms that will allow testing a given property iii) tests definition, aimed at collecting evidence proving the property iv) tests execution and evidence collection. So, for example, a test to collect evidence over the attribute \(x\) would be a pair \( (M_x, (c, R_e) ) \) where \(M_x\) is the mechanism the system offers to test the attribute \(x\), c is the code to execute, and \(R_e\) is the expected result of the test code execution; if the concrete results are close enough to the expected ones, the certificate can be released.
+
+The main issue of directly transferring such a process over IoT systems is the resources and time required to complete it, especially because there is almost no difference between a full certification and a recertification process in state-of-the-art techniques. Assuming that a brand new IoT system should undergo a full certification process, finding a lightweight and less strict solution is necessary to reduce the unease caused by recertification processes since their goal should only be to maintain most of the "strength" the original certificate already possessed. Another variable such solution should deal with is the "quantity" of changes the system went through before triggering the recertification process; combined with the wide variety of contexts and devices that an IoT system may be involved with, it makes it crucial to generalize the process.
+
+A way to generalize a certification process whose main objective is to be fast and lightweight, even though sacrificing some accuracy, is to remove the assumption of knowing a priori all the properties, their attributes and the mechanisms the system offers to test them. By removing the majority of the manual preparation phase, properties information will have to be extracted dynamically at execution time using evidence extraction techniques in a "discovery" phase, aiming to uncover some properties and their values from the certification target to classify and evaluate them. Furthermore, the high dynamicity of IoT systems implies continuous and unpredictable state transitions that inevitably involve the transformation of various attribute values. Such changes make it essential to not only define thresholds to validate attributes and properties but also ranges some of those values can shift within.
+
+\subsection{The Process}
+The first issue to address is the redundant re-certifications; specifically, it is important to filter out all the situations where configuration changes might happen on a device, but there is no way that such changes could influence the security certificate of the system. So, for example, if a device is updated with new features but is not actively communicating with other devices, it can be assumed that it is safe not to issue a certification process immediately. However, if such a device should send a message to another device for any reason, the certification process would be immediately needed, and it should be fast. Hence, to quickly release a certificate, it should be enough to certify only the involved features' security (such as the encryption and non-repudiation properties) and execute an extremely lightweight process to release a certificate with very limited validity (such as one hour or just one interaction). It is also possible to access the revoked certificates, check the process that allowed the certification to be completed first, and test the changes that caused the revocation; this way, the new certificate could benefit with a longer duration. 
+
+As mentioned in the above sections, the process is started by the trigger component (\ref{trigger}); it detects and evaluates changes in the system. The process is triggered if a security property or one of its attributes has been altered somehow. 
+
+Once the trigger process lists all the attributes involved, an expert person should assign a score range to each attribute and determine a threshold for the macro-properties based on the knowledge of the system and context.
+
+At this point, the framework should use the equation in figure \ref{eqn:mapping} to determine the values each attribute has to possess based on the score needed. 
+
+The final step is to test the attributes for the expected values. The certificate can be released if all the tests succeed; otherwise, new values must be determined for some attributes before a new testing phase. 
+For example, referring to figure \ref{fig:thex}, if the tests on attributes \textit{a} and \textit{b} succeeded but the tests on attribute \textit{c} failed, it is necessary to lower the value of attribute c to make the tests succeed; doing so lowers the final score value under the threshold; to fix that it is needed to raise the values of attributes \textit{a} and \textit{b} in order to re-equilibrate the score.
+
+\begin{figure}[htb]
+    \centering
+    \fbox{\includegraphics[scale=0.44]{images/Threshold_example.png}}
+    \caption{Testing phase with threshold example}
+    \label{fig:thex}
+\end{figure}
+
+However, such an approach may not have a faster execution time than the current state-of-the-art techniques simply because those techniques imply that the execution phase is composed only of pre-defined test executions over well-aimed and known mechanisms. Therefore, the goal of the proposed solution approach is not to have a faster execution time; instead, it is to have a shorter and more automated overall certification process that would also require considerably fewer resources.
+
+Furthermore, directly mapping the properties and attributes to the tests that demonstrate them will be crucial to establishing the values of such attributes. In other words, defining a series of tests are important to determine if a given property or attribute is present. To do so efficiently, it is still necessary to have a set of device or system information that would allow the framework to filter out tests that are known to fail.
+
+
+
+\subsection{Ephemeral Certificate Meaning}
+The volatility or ephemerality of this approach comes from the fact that tests must be light and fast, hence, they cannot be in-depth and ensure a long lasting functioning of the system.
