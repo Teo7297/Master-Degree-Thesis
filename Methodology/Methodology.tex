@@ -19,11 +19,12 @@ The linear mapping (mapping that maintains a constant ratio between points) oper
 \end{figure}
 
 Considering the range of valid attribute values from A to B, the range of scores from C to D, and the actual attribute value p, the mapping allows computation of the corresponding score value q.
-A linear mapping requires two operations: a scaling operation to make the ranges the same size and an offset operation to align the ranges. Since scaling is always relative to the origin, the first step is to shift the range [A, B] to the origin by subtracting A from p; next, scale p by the ratio of the range sizes (D-C)/(B-A). Finally, shift this value to the start of the [C, D] range by adding C, resulting in the equation (ref). By rearranging the terms of the equation, it is possible to extract the scale and offset factors that compose it:
+A linear mapping requires two operations: a scaling operation to make the ranges the same size and an offset operation to align the ranges. Since scaling is always relative to the origin, the first step is to shift the range [A, B] to the origin by subtracting A from p; next, scale p by the ratio of the range sizes (D-C)/(B-A). Finally, shift this value to the start of the [C, D] range by adding C, resulting in the equation in figure \ref{eqn:mapping}. By rearranging the terms of the equation, it is possible to extract the scale and offset factors that compose it:
 
-\[ scale = \frac{D - C }{B - A} \]
+\[scale = \frac{D - C }{B - A}\]
 \[offset = -A \times \frac{D - C}{B - A} + C\]
 \[q = \left ( p \times scale \right ) + offset\]
+
 
 This equation maps the attribute's values range to the scores range spreading the values evenly (e.g., “equal importance” expressed with W[0] = 1/n, W[1] = 1/n, \dots , W[n]= 1/n). If the attribute's values are not numerical, they should be pre-emptively mapped to a list of indices; the indices list should then be used instead of the attribute's values. For example, for the micro-property Interface Control (ref), it is necessary to have a list of supported communication technologies that could include IEEE 802.11, Bluetooth and Ethernet connections; such a list might be mapped with an index list [1,2,3] where each index represents one of the elements.
 

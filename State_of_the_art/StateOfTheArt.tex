@@ -1,4 +1,4 @@
-To better visualize the context of this thesis work, it is essential to introduce the main system paradigms that today guide the various security certification frameworks.
+This chapter introduces the main system paradigms that today guide the various security certification frameworks.
 
 \section{Cloud Computing Paradigm}
 The National Institute of Standards and Technology (NIST) defined the Cloud computing paradigm as follows: “Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction \cite{mell2011nist}."
@@ -7,11 +7,11 @@ The most commonly used deployment model for Cloud computing is the public Cloud,
 Another commonly used deployment model is the private Cloud, usually found in single organizations for a more secure digital environment.
 The other two models are Hybrid Cloud and Community Cloud, where the former is a mixture of public and private Cloud that overcomes some of the limitations of each, and the latter is an expansion from a private cloud, allowing multiple organizations to access its resources \cite{atlam2017integration}.
 
-The essential services that Cloud computing offers include infrastructure as a service (IAAS), platform as a service (PAAS) and software as a service (SAAS), each of whom allows a different calibre of resources' control between the user and the provider \cite{khan2019edge}.
+The essential services that Cloud computing offers include infrastructure as a service (IaaS), platform as a service (PaaS) and software as a service (SaaS), each of whom allows a different calibre of resources' control between the user and the provider \cite{khan2019edge}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{IoT In Cloud Environments}
+\subsection{IoT in Cloud Environments}
 Given the general flexibility, dynamicity and resource availability of Cloud computing, it has been the first adopted solution for IoT (Internet of Things) systems implementations.
 The IoT label defines the network created around small smart devices interconnected through the Internet. To be classified as an IoT device, a piece of hardware has to be embedded with electronics, software, and connectivity in a way that enables it to communicate with other devices and exchange data that can be directly gathered from the device itself thanks to specific embedded sensors or from other connected devices.
 The range of possible objects that today are intended as Smart IoT devices is vast; it comprehends instruments, vehicles, buildings, all sorts of sensor-enabled devices \cite{gokhale2018introduction}, industrial machines, and small objects like clothing, packages, parts, materials and much more. All these objects are active participants in the network and thus can be monitored, tracked and counted.
@@ -25,7 +25,7 @@ The biggest challenge in the IoT field is managing the massive quantity of data 
 
 \section{Edge Computing Paradigm}
 \label{Edge}
-Edge computing directs computational data, applications, and services away from Cloud servers to the edge of a network. The content providers and application developers can use the Edge computing systems by offering the users services closer to them. Edge computing is characterized in terms of high bandwidth, ultra-low latency, and real-time access to the network information that can be used by several applications \cite{khan2019edge}.
+Edge computing directs computational data, applications, and services away from Cloud servers to the edge of a network (figure \ref{fig:ceiot_stack}). The content providers and application developers can use the Edge computing systems by offering the users services closer to them. Edge computing is characterized in terms of high bandwidth, ultra-low latency, and real-time access to the network information that can be used by several applications \cite{khan2019edge}.
 
 Edge or Fog computing is the latest and most promising researched solution to the recent trends of distributing the computation closer to the data sources. The goal is to provide low latency, high capacity and network efficient computation to IoT systems bringing multiple small Cloud nodes (Fog nodes) between the Cloud and the IoT devices at the "edge" of the network. As for many concepts, the definitions are numerous \cite{sahni2018data} but Yi et al. stated the following as a possible definition: "Fog Computing is a geographically distributed computing architecture with a resource pool which consists of one or more ubiquitously connected heterogeneous devices (including edge devices) at the edge of the network and not exclusively seamlessly backed by Cloud services, to collaboratively provide elastic computation, storage and communication (and many other new services and tasks) in isolated environments to a large scale of clients in proximity" \cite{yi2015fog}.
 Practically Fog computing represents an extension of Cloud computing that offers multiple benefits to the latter:
@@ -41,15 +41,21 @@ Practically Fog computing represents an extension of Cloud computing that offers
     \item Support for online analytics and interplay with the Cloud
 \end{itemize}
 
+\begin{figure}[h]
+    \centering
+    \fbox{\includegraphics[scale=0.55]{images/cloud_edge_iot_stack.png}}
+    \caption{Example of cloud-edge-IoT stack architecture}
+    \label{fig:ceiot_stack}
+\end{figure}
 
-\subsection{Edge And Cloud Relationship}
+\subsection{Edge and Cloud Relationship}
 Edge computing is considered an extension of Cloud computing and not a standalone computing paradigm; it still relies on the Cloud at the top level of its scheme, but it drastically reduces the load over the Cloud infrastructures while maintaining all of the Cloud's provided services like data computing, storage and applications. The main difference between the two is the location of the servers; with the Cloud alone, latency dependant applications may encounter latency and jitter issues due to the distance between the user device and the server. On the other hand, Edge computing enables location-aware and mobile applications with full support, while Cloud applications need to find other workarounds. The longer path to the server can also be a weak point for security attacks on the Cloud. Another difference is the target audience: Cloud computing is a global solution, Edge computing is limited. Lastly, the single Edge node hardware is designed to be horizontally scalable through distribution, while Cloud computing is generally more vertically scalable \cite{khan2019edge}.
 
 
 Today, an ever-rising number of applications must use software that satisfies strict reliability, availability and integrity requirements, especially when dealing with critical safety systems; hence, multiple assurance and verification techniques have been introduced, such as certification schemes, testing, service level agreements, audit/compliance and monitoring frameworks \cite{ardagna2015security}. 
 
 
-\section{Security And Assurance In Distributed Systems}
+\section{Security and Assurance in Distributed Systems}
 Software security assurance techniques enhance software and services transparency \cite{ardagna2014management} and increase the actors' confidence that such services behave as expected. In line with standard software security assurance definitions \cite{goertzel2007software}, cloud security assurance can be defined as the way to gain justifiable confidence that infrastructure and applications will consistently demonstrate one or more security properties and operationally behave as expected despite failures and attacks. However, assurance is a much wider notion than security, as it includes methodologies for collecting and validating evidence supporting security properties.
 
 When dealing with cloud infrastructure, Ardagna et al. \cite{article} highlighted three requirements that need to be considered with every assurance technique: i) risk assessment and management, ii) transparency and iii) public policy and compliance.
@@ -81,7 +87,7 @@ The major approaches to cloud assurance are discussed below.
 
 
 
-\subsection{Assurance For Highly Distributed Paradigms}
+\subsection{Assurance for Highly Distributed Paradigms}
 As described in section \ref{Edge}, Edge computing adds multiple challenges to the table in terms of functionalities, especially when combined with IoT layers, which bring on even more security and assurance topics. Mahmud et al. \cite{mahmud2018fog} highlighted three security aspects that will inherently haunt new highly distributed computing paradigms:
 \begin{itemize}
 
@@ -156,20 +162,17 @@ More details about the above phases are well described in \cite{infrastructure20
 
 CC is now an established pillar in the security certification world, especially in the commercial industry, but it is not a perfect solution, especially when applied to highly dynamic systems like Edge and IoT. It is also worth noting that CC certifications are attributed to a specific version of the system under a specific configuration, and any configuration change or software update could mandate a re-certification process. To counter the redundancy of such processes, the CC designers proposed the Assurance Continuity (CCAC) re-evaluation process[], but the need to repeat the certification process is a big limitation. Therefore, the research never stopped; when considering highly dynamic domains such as those implied by the Cloud and Fog computing paradigms, it is important to define new certification schemes that better align with the context. 
 
-\subsection{New Certification Efforts In Cloud Environments}
-Cloud service certification has been a highly focused research point in recent years and is now considered a mature assurance feature. Moreover, as identified by M. Anisetti et al. in \cite{anisetti2017semi}: "Compared to traditional service certification, cloud certification is: i) highly dynamic, it is affected by contextual changes at any layer of the cloud stack, ii) multi-layer, it can refer to services at different cloud layers; iii) intrinsically incremental, it requires continuous validity verification and incremental adaptation with the scope to minimize costly re-certification activities, and iv) trustworthy by delegation, it requires advanced trust models based on delegation to support cloud peculiarities". M. Anisetti et al. also proposed a continuous and incremental approach to Cloud service certification, providing a formal description of the audit-related evidence collection. Such an approach is founded on five main pillars: non-functional properties, non-functional mechanisms, Target of Certification (ToC), evidence collection and the life cycle of the certification. The proposed certification process can be simplified with the following steps:
+%%%%%%%%%%%%%% da decidere se lasciarlo qui %%%%%%%%%%%%%%%%%%%%%%%%%
+\input{State_of_the_art/CertificationPillars}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{itemize}
-    \item Non-functional properties definition
-    \item ToC definition, which includes the description of the non-functional mechanisms offered by the system
-    \item Tests definition
-    \item Tests execution, which involves evidence collection and analysis
-    \item Certificate release
-\end{itemize}
+\subsection{New Certification Efforts in Cloud Environments}
+Cloud service certification has been a highly focused research point in recent years and is now considered a mature assurance feature. Moreover, as identified by M. Anisetti et al. in \cite{anisetti2017semi}: "Compared to traditional service certification, cloud certification is: i) highly dynamic, it is affected by contextual changes at any layer of the cloud stack, ii) multi-layer, it can refer to services at different cloud layers; iii) intrinsically incremental, it requires continuous validity verification and incremental adaptation with the scope to minimize costly re-certification activities, and iv) trustworthy by delegation, it requires advanced trust models based on delegation to support cloud peculiarities". M. Anisetti et al. also proposed a continuous and incremental approach to Cloud service certification, providing a formal description of the audit-related evidence collection. Such an approach is founded on five main pillars: non-functional properties, non-functional mechanisms, Target of Certification (ToC), evidence collection and the life cycle of the certification. The proposed certification process can be simplified with the following steps: i) Non-functional properties definition, ii) ToC definition, which includes the description of the non-functional mechanisms offered by the system, iii) Tests definition, iv) Tests execution, which involves evidence collection and analysis and v) Certificate release.
+
 
 This process involves different entities, such as the service provider, the cloud provider, the certification authority and an accredited laboratory; this way, a chain of trust is formed, and the responsibilities are evenly spread between the entities involved. It is also split into an issuing phase, where the process is responsible for all the evaluation activities, and a post-issuing phase, which continuously verifies the certificate's validity against eventual context changes \cite{anisetti2017semi}.
 
-\subsection{New Certification Efforts In Edge Environments}
+\subsection{New Certification Efforts in Edge Environments}
 Certification schemes over Fog/Edge computing nodes are a recent and less mature topic; when dealing with a network composed of countless devices (the Fog nodes), it is fundamental to have a completely automated framework capable of handling the whole certification process for each node. The scheme proposed by Aslam et al. in \cite{aslam2020fonac} addressed the matter with automated and continuous monitoring and auditing of the Fog nodes; nevertheless, this total automation relies entirely on the backend provided by the Cloud infrastructure that acts as an inner CA for its Fog layer, inheriting all its vulnerabilities. The differences between this approach and the ones proposed for the Cloud are the requirements for the certifications. Fog nodes have limited functionalities and need to be quickly admitted to the Fog layer; meanwhile, there is a need to execute much stronger certification activities on the Cloud stack.
 
 \subsection{Current IoT Certification Efforts}
@@ -287,17 +290,24 @@ Fields and attributes designated for change control are referred to as configura
 Configuration changes represent a critical point in the cybersecurity certification frameworks because a certificate cannot predict how a system will be affected after one. Moreover, even though most developers are focusing on creating software that should not need a system restart after an update, the results are weak, and the system downtime represents another critical aspect for IoT systems. It should also be noted that an IoT system update includes the transferral of updated data and programs to all the devices composing it, resulting in a rather long downtime, depending on the system's topology and resources. Furthermore, downtime represents an issue for certification frameworks, especially for this thesis' proposed solution, due to the inability to start an evaluation process on the system.
 To address the downtime matter, M. Ciok et al. recently proposed a platform to help developers with the system's architecture \cite{mateusz2022flex}.
 
-%%%%%%%%%%%%%% da decidere se lasciarlo qui %%%%%%%%%%%%%%%%%%%%%%%%%
-\input{State_of_the_art/CertificationPillars}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 \section{Looking Forward}
-Certification schemes went a long way and passed through many iterations of improvements, optimizations and agreements; now, it is clear that no approach is perfect, especially when dealing with new generation systems that often include IoT layers in their stack. In addition, the IoT paradigm is much more dynamic than the cloud, both in the software and hardware, resulting in remarkably higher costs in terms of time and money; for this reason, the classic approaches seem not to be feasible anymore and result in being too restrictive for the IoT system manufacturers. The ideal certification scheme should be less rigorous in terms of assumptions and remove most costs (the manual phases). Such a scheme should deal with more variables, like unknown mechanisms, properties and attributes; a quick, ephemeral certification scheme that would verify only the strictly needed properties with the minimum effort to allow the system to keep operating right after remote configuration or context changes. Such an ideal scheme should most certainly address the following challenges:
-\begin{itemize}
-    \item How should the properties be modelled now?
-    \item Which of the certification building blocks should change, and how?
-    \item Remembering that some mechanisms might not be known, given a system and a property, what steps should be included in the new certification process to certify such property of the system?
-    \item How should the process deal with the limited resources of an IoT device/system in the testing phase?
+Certification schemes went a long way and passed through many iterations of improvements, optimizations and agreements; now, it is clear that no approach is perfect, especially when dealing with new generation systems that often include IoT layers in their stack. In addition, the IoT paradigm is much more dynamic than the cloud, both in the software and hardware, resulting in remarkably higher costs in terms of time and money; for this reason, the classic approaches seem not to be feasible anymore and result in being too restrictive for the IoT system manufacturers. The ideal certification scheme should be less rigorous in terms of assumptions and remove most costs (the manual phases). Such a scheme should deal with more variables, like unknown mechanisms, properties and attributes; a quick, ephemeral certification scheme that would verify only the strictly needed properties with the minimum effort to allow the system to keep operating right after remote configuration or context changes. Such an ideal scheme should address the following challenges:
+\begin{enumerate}
+    \item How should the properties be modelled now?\\ 
+    As discussed in this chapter, current schemes rely on properties that are not expected to change, and their changes can lead to expensive, slow and redundant recertifications; finding new models for the system's properties is essential to allow manufacturers to keep updated their systems.
+    
+    \item Which of the other certification building blocks should change, and how?\\
+    If the properties' model change, it is crucial to identify which of the other building blocks would be affected and which could be optimized.
+    
+    \item Remembering that some mechanisms might not be known, given a system and a property, what steps should be included in the new certification process to certify such property of the system?\\
+    Non-functional mechanisms are usually known at certification time; this allows the laboratories to execute well-aimed tests to demonstrate the properties of the system exploiting such mechanisms. However, when dealing with dynamic systems, some configuration change could add or disable a mechanism which could not be easily detected; hence, it is important to design a scheme capable of dealing with this issue.
+    
+    \item How should the process deal with the limited resources of an IoT device/system in the testing phase?\\
+    Downtime is another IoT system's major issue when dealing with recertifications. Some systems cannot afford to be disabled for long periods, but IoT devices have very limited resources. Minimizing the load and resorting to new testing methods could be needed to overcome this issue.
+\end{enumerate}
 
-\end{itemize}
+The next chapter will focus on making the first step toward a new recertification scheme to address such challenges, specifically, challenges 1,2 and 4. It will introduce the scoring system and the trigger component that will make the process as fast and automated as possible; moreover, properties, attributes, evidence collection and certification will be remodelled and deeply discussed. Finally, the new models are introduced to obtain an extremely lightweight scheme that will allow manufacturers to recertify their systems with the minimum possible effort quickly.
+

@@ -1,9 +1,9 @@
 
 
-\section{Traditional Certification Frameworks Composition}
+\subsection{Building Blocks of the Certification Schemes}
 Modern certification frameworks rely upon several components defining how the process is executed and how the results should look. Below is a detailed list of the major pillars of certification frameworks with their fundamental functionalities as underlined by Anisetti et al. \cite{anisetti2017semi}\cite{anisetti2022multi}.
 
-\subsection{Non-Functional Properties}
+\subsubsection{Non-Functional Properties}
 For the certification process of a system, it is important to establish some requirements that can be functional or non-functional preemptively, usually this is done during an initial risk assessment process. As stated by Chen et al. \cite{chen2013verification}: "broadly, functional requirements define what a system is supposed to do, and non-functional requirements define how a system is supposed to be", meaning that non-functional requirements focus on the system itself instead of what the system produces in output; once a requirement is proven to be satisfied by the system, it becomes a non-functional property of the same, and it can be expressed as follows: ⟨name, {(attribute, value), (attribute, value)}⟩. A property is composed of pairs "attribute-value" where the attributes are essential sub-properties that define the strength of the property.
 
 In other words, non-functional properties describe the system's capabilities and are usually grouped under the categories defined by the CIA triad: i) Confidentiality, ii) Integrity and iii) Availability. The CIA triad is an organizational model designed to guide information storing policies; its three parts are cybersecurity's three most crucial components.
@@ -27,21 +27,21 @@ Integrity is the assurance that the information is trustworthy and accurate; it 
 
 Availability guarantees reliable access to the information; it is best ensured by rigorously maintaining all hardware and staying up to date with all system upgrades; providing bandwidth, preventing bottlenecks and fast disaster recovery are also essential.
 
-\input{State_of_the_art/Prop-Taxonomy}
 
-\subsection{Non-Functional Mechanisms}
+
+\subsubsection{Non-Functional Mechanisms}
 For a non-functional property to be proven, a non-functional mechanism, in the form of \( ( name, \{ attribute, value \} )\), must be implemented to execute the certification process under specific configurations. Moreover, the property is what the process needs to verify, and the mechanism is the tool the system offers to test such property \cite{anisetti2017semi}; the verification is usually done through tests in the form of \\ \( (mechanism, (codde to execute, expected results))\). Finally, it is important to note that the mechanisms need to be described in the system's documentation; this allows the accredited laboratory to analyze and test them during the manual review phases.
 
 
-\subsection{Target Of Certification}
+\subsubsection{Target of Certification}
 The application context and the system perimeter define the Target of the Certification (ToC); it describes the mechanisms on which the non-functional properties that need to be certified rely. Moreover, the evaluation of the certification scheme must verify the target’s (security) features. For example, in the Common Criteria process, the ToC (actually named Target of Evaluation) is accurately described in the Security Target Document.
 
-\subsection{Evidence}
+\subsubsection{Evidence}
 Evidence collection is the main step to proving that a given non-functional property is valid for a given ToC; it is important to note that evidence can be gathered by testing the service actively or passively. 
 The property is finally assigned to the system when enough evidence is collected for a given requirement through well-aimed tests. 
 
 
-\subsection{Life Cycle}
+\subsubsection{Life Cycle}
 \begin{figure}[hb]
     \centering
     \includegraphics[scale=0.5]{images/lifeCycle.png}
@@ -65,7 +65,7 @@ The decommissioning phase represents the end of the lifecycle of the system and 
 Typically, a certification process for Cloud services consists of a collaborative effort between four entities: i) a service provider who develops the service that needs to be certified, ii) a cloud provider supporting the service's certification, iii) a CA responsible for the definition of the requirements and the methodology and iv) an accredited lab to carry out the system evaluation. The problem of such an approach resides in the fact that continuous context changes can rapidly invalidate the assigned certificates, and without proper context testing techniques, it is necessary to re-certificate the whole service every time. The framework that M. Anisetti et al. proposed addressed this issue by constantly verifying the possessed certifications against the context changes to prevent unnecessary revocations and re-certifications.
 
 
-\subsection{Labels}
+\subsubsection{Labels}
 Labelling schemes exist to straightforwardly inform the user about the security certification that has been executed on a device; such schemes should contain the following main groups of information:
 
 \begin{itemize}
