@@ -56,17 +56,9 @@ Today, an ever-rising number of applications must use software that satisfies st
 
 
 \section{Security and Assurance in Distributed Systems}
-Software security assurance techniques enhance software and services transparency \cite{ardagna2014management} and increase the actors' confidence that such services behave as expected. In line with standard software security assurance definitions \cite{goertzel2007software}, cloud security assurance can be defined as the way to gain justifiable confidence that infrastructure and applications will consistently demonstrate one or more security properties and operationally behave as expected despite failures and attacks. However, assurance is a much wider notion than security, as it includes methodologies for collecting and validating evidence supporting security properties.
+Software security assurance techniques enhance software and services transparency \cite{ardagna2014management} and increase the actors' confidence that such services behave as expected. In line with standard software security assurance definitions \cite{goertzel2007software}, cloud security assurance can be defined as the way to gain justifiable confidence that infrastructure and applications will consistently demonstrate one or more security properties and operationally behave as expected despite failures and attacks. However, assurance is a much wider notion than security, as it includes methodologies for collecting and validating evidence supporting security properties. When dealing with cloud infrastructure, Ardagna et al. \cite{article} highlighted three requirements that need to be considered with every assurance technique: i) risk assessment and management, ii) transparency and iii) public policy and compliance. 
 
-When dealing with cloud infrastructure, Ardagna et al. \cite{article} highlighted three requirements that need to be considered with every assurance technique: i) risk assessment and management, ii) transparency and iii) public policy and compliance.
-
-Risk assessment and management are needed before the cloud service deployment and allow the business to obtain a precise evaluation of the risks that such a process would introduce.
-
-Transparency is a core component when defining and optimizing assurance techniques and allows end-users to visualize and control the data flow and the security issues in their services. In addition, transparency is necessary to support introspection, the capability of a cloud provider to examine and observe its internal processes, and outrospection, which is the same thing but from the customer's point of view \cite{ardagna2014management}.
-
-To comply with the transparency requirement, cloud providers must show their policies and compliance with standards and regulations and how such compliance is achieved \cite{macneil2006comply}.
-
-The major approaches to cloud assurance are discussed below.
+Risk assessment and management are needed before the cloud service deployment and allow the business to obtain a precise evaluation of the risks that such a process would introduce. Transparency is a core component when defining and optimizing assurance techniques and allows end-users to visualize and control the data flow and the security issues in their services. In addition, transparency is necessary to support introspection, the capability of a cloud provider to examine and observe its internal processes, and outrospection, which is the same thing but from the customer's point of view \cite{ardagna2014management}. To comply with the transparency requirement, cloud providers must show their policies and compliance with standards and regulations and how such compliance is achieved \cite{macneil2006comply}. The major approaches to cloud assurance are discussed below.
 \begin{description}
     \item[Testing]
     Testing involves executing software or system services with the help of manual or automated tools to evaluate specific behaviours and properties. The test activity allows gathering evidence to support the evaluation target's property; properties can belong to the cloud infrastructure or the service running on it.
@@ -87,23 +79,11 @@ The major approaches to cloud assurance are discussed below.
 
 
 
-\subsection{Assurance for Highly Distributed Paradigms}
-As described in section \ref{Edge}, Edge computing adds multiple challenges to the table in terms of functionalities, especially when combined with IoT layers, which bring on even more security and assurance topics. Mahmud et al. \cite{mahmud2018fog} highlighted three security aspects that will inherently haunt new highly distributed computing paradigms:
-\begin{itemize}
-
-\item Technological discoveries advance at different paces for software and hardware; new software architectures (like edge computing) are designed upon traditional components, especially for networking, raising the number of vulnerabilities to attacks.
-
-\item Highly distributed systems make it difficult to ensure secure authentication and privacy in every node at all times; monitoring frameworks could be insufficient in many cases.
-
-\item Security mechanisms for data-centric integrity can greatly affect the quality of service of these systems.
-
-\end{itemize}
 
 
-\section{Security Certifications}
-Security certifications are granted by independent (from the system supplier and acquirer) third parties whose goal is to verify the system's quality completely and objectively. Certifications allow more confidence in the product over the competition and legislative compliance when talking about quality, functionality and security \cite{heck2010software}.
 
-The certification schemes' main focus is to prove that the selected software system or service would have some non-functional properties and behave as expected. 
+\subsection{Security Certifications}
+Security certifications are granted by independent (from the system supplier and acquirer) third parties whose goal is to verify the system's quality completely and objectively. Certifications allow more confidence in the product over the competition and legislative compliance when talking about quality, functionality and security \cite{heck2010software}. The certification schemes' main focus is to prove that the selected software system or service would have some non-functional properties and behave as expected. 
 Over the years, there have been proposed two main types of certification approaches: i) static, such as the ones proposed by \cite{anisetti2013test}\cite{CSATrustSTAR} ii) continuous and incremental, such as Common Criteria \cite{anisetti2017semi}\cite{infrastructure2002common}. 
 
 A generic software certification process requires two types of input: i) The software artefact that needs to be certified and ii) one or more Conformance Properties of the artefact. The properties usually fall into one of the following categories:
@@ -116,9 +96,7 @@ A generic software certification process requires two types of input: i) The sof
     \item Compliance 
 \end{itemize}
 
-Although in the most recent years, the NIST proposed to definitely classify the systems' properties under just the Confidentiality, Integrity and Availability categories, more about this in the [properties] chapter. 
-
-Moreover, the properties can be generic or dedicated to the specific artefact and need to be appropriate to the application's domain; this is established in a Conformance Analysis process \cite{anisetti2017semi}.
+Although in the most recent years, the NIST proposed to definitely classify the systems' properties under just the Confidentiality, Integrity and Availability categories, more about this in the [properties] chapter. Moreover, the properties can be generic or dedicated to the specific artefact and need to be appropriate to the application's domain; this is established in a Conformance Analysis process \cite{anisetti2017semi}.
 
 
 \subsection{Certification Schemes History}

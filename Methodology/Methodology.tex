@@ -51,9 +51,7 @@ The trigger is a component detecting security changes in the system, evaluating 
 
 \[Changes() \rightarrow \left \{ \left ( p_j, \left \{ a_k \right \} \right ) \right \} \]
 
-Where \(p_j\) is a micro-property of the system and \( \left \{a_k \right \} \) is the set of specific attributes impacted by the update.
-
-Such a function includes multiple background operations that the system has to deal with; these functionalities should probably include a monitoring framework for change detection. The monitoring should be invoked automatically every time a system (or context) update occurs. It should then compare the updated changes with the security properties and their attributes; any change over a security property should be immediately added to the Changes function output list. Moreover, the trigger component should also be notified about the availability of new changes.
+Where \(p_j\) is a micro-property of the system and \( \left \{a_k \right \} \) is the set of specific attributes impacted by the update. Such a function includes multiple background operations that the system has to deal with; these functionalities should probably include a monitoring framework for change detection. The monitoring should be invoked automatically every time a system (or context) update occurs. It should then compare the updated changes with the security properties and their attributes; any change over a security property should be immediately added to the Changes function output list. Moreover, the trigger component should also be notified about the availability of new changes.
 
 
 \section{Evidence Collection Model}
@@ -67,22 +65,17 @@ The evidence collection model is finally defined as a set of elements, one for e
 \section{Certification Model Definition}
 Once the trigger component starts the process by providing the system changes information, an important component that needs to be used for the recertification is the set of old certificates \(\mathcal{C}\); they contain all the demonstrated properties with their score and collected evidence prior to the update. Therefore, the proposed framework is expected to provide a function to obtain the certification model for the updated system; such function is formalized as follows:
 
-
-
-Once the new certification model is computed, it will be possible to call the Execute function that will execute the tests on the system based on the given certification model returning the new certificate if all the requirements are satisfied.
-
-
-The resulting certification model is defined as 
-\(\mathcal{M} = \left ( \left ( P_1, P_2, P_3 \right ), \mathcal{E} \right )\) where \(P_1\) is the Confidentiality macro-property, \(P_2\) is the Integrity macro-property and \(P_3\) is the Availability macro-property, and \( \mathcal{E} \) is the evidence collection model.
- 
-The framework should be able to call the \textit{Execute} function using the certification model to deliver a new ephemeral certificate.
-
 \[Ephemeral(\mathcal{C}, system_{t+1}) \rightarrow {\mathcal{M}}_{t+1} \]
 
-Where \( \mathcal{C} = {c_0, \dots , c_t} \) and \(c_i\) is the certificate released at time \(i\); each certificate is modelled as a set of pairs \( (p, \{e_j\}) \) where \(p\) is a micro-property with the set of evidences supporting it.
+
+Once the new certification model is computed, it will be possible to call the Execute function that will execute the tests on the system based on the given certification model returning the new certificate if all the requirements are satisfied. The resulting certification model is defined as 
+\(\mathcal{M} = \left ( \left ( P_1, P_2, P_3 \right ), \mathcal{E} \right )\) where \(P_1\) is the Confidentiality macro-property, \(P_2\) is the Integrity macro-property and \(P_3\) is the Availability macro-property, and \( \mathcal{E} \) is the evidence collection model.
+ 
+The framework should then be able to call the \textit{Execute} function using the certification model to deliver a new ephemeral certificate.
 
 \[ Execute(\mathcal{M}_{t+1}) \rightarrow \mathcal{C} \cup \{c_{t+1}\} \]
-The system will finally be attributed a new certificate that will complement all the previously obtained ones.
+
+Where \( \mathcal{C} = {c_0, \dots , c_t} \) and \(c_i\) is the certificate released at time \(i\); each certificate is modelled as a set of pairs \( (p, \{e_j\}) \) where \(p\) is a micro-property with the set of evidences supporting it. The system will finally be attributed a new certificate that will complement all the previously obtained ones.
 
 
 \section{Assumptions}
@@ -112,13 +105,8 @@ A way to generalize a certification process whose main objective is to be fast a
 \subsection{The Process}
 The first issue to address is the redundant re-certifications; specifically, it is important to filter out all the situations where configuration changes might happen on a device, but there is no way that such changes could influence the security certificate of the system. So, for example, if a device is updated with new features but is not actively communicating with other devices, it can be assumed that it is safe not to issue a certification process immediately. However, if such a device should send a message to another device for any reason, the certification process would be immediately needed, and it should be fast. Hence, to quickly release a certificate, it should be enough to certify only the involved features' security (such as the encryption and non-repudiation properties) and execute an extremely lightweight process to release a certificate with very limited validity (such as one hour or just one interaction). It is also possible to access the revoked certificates, check the process that allowed the certification to be completed first, and test the changes that caused the revocation; this way, the new certificate could benefit with a longer duration. 
 
-As mentioned in the above sections, the process is started by the trigger component (\ref{trigger}); it detects and evaluates changes in the system. The process is triggered if a security property or one of its attributes has been altered somehow. 
+As mentioned in the above sections, the process is started by the trigger component (\ref{trigger}); it detects and evaluates changes in the system. The process is triggered if a security property or one of its attributes has been altered somehow. Once the trigger process lists all the attributes involved, an expert person should assign a score range to each attribute and determine a threshold for the macro-properties based on the knowledge of the system and context. At this point, the framework should use the equation in figure \ref{eqn:mapping} to determine the values each attribute has to possess based on the score needed. The final step is to test the attributes for the expected values. The certificate can be released if all the tests succeed; otherwise, new values must be determined for some attributes before a new testing phase. 
 
-Once the trigger process lists all the attributes involved, an expert person should assign a score range to each attribute and determine a threshold for the macro-properties based on the knowledge of the system and context.
-
-At this point, the framework should use the equation in figure \ref{eqn:mapping} to determine the values each attribute has to possess based on the score needed. 
-
-The final step is to test the attributes for the expected values. The certificate can be released if all the tests succeed; otherwise, new values must be determined for some attributes before a new testing phase. 
 For example, referring to figure \ref{fig:thex}, if the tests on attributes \textit{a} and \textit{b} succeeded but the tests on attribute \textit{c} failed, it is necessary to lower the value of attribute c to make the tests succeed; doing so lowers the final score value under the threshold; to fix that it is needed to raise the values of attributes \textit{a} and \textit{b} in order to re-equilibrate the score.
 
 \begin{figure}[htb]
@@ -128,11 +116,9 @@ For example, referring to figure \ref{fig:thex}, if the tests on attributes \tex
     \label{fig:thex}
 \end{figure}
 
-However, such an approach may not have a faster execution time than the current state-of-the-art techniques simply because those techniques imply that the execution phase is composed only of pre-defined test executions over well-aimed and known mechanisms. Therefore, the goal of the proposed solution approach is not to have a faster execution time; instead, it is to have a shorter and more automated overall certification process that would also require considerably fewer resources.
-
-Furthermore, directly mapping the properties and attributes to the tests that demonstrate them will be crucial to establishing the values of such attributes. In other words, defining a series of tests are important to determine if a given property or attribute is present. To do so efficiently, it is still necessary to have a set of device or system information that would allow the framework to filter out tests that are known to fail.
+However, such an approach may not have a faster execution time than the current state-of-the-art techniques simply because those techniques imply that the execution phase is composed only of pre-defined test executions over well-aimed and known mechanisms. Therefore, the goal of the proposed solution approach is not to have a faster execution time; instead, it is to have a shorter and more automated overall certification process that would also require considerably fewer resources. Furthermore, directly mapping the properties and attributes to the tests that demonstrate them will be crucial to establishing the values of such attributes. In other words, defining a series of tests are important to determine if a given property or attribute is present. To do so efficiently, it is still necessary to have a set of device or system information that would allow the framework to filter out tests that are known to fail.
 
 
 
 \subsection{Ephemeral Certificate Meaning}
-The volatility or ephemerality of this approach comes from the fact that tests must be light and fast, hence, they cannot be in-depth and ensure a long lasting functioning of the system.
+The volatility or ephemerality of this approach comes from the fact that tests must be light and fast, hence, they cannot be in-depth and ensure a long lasting functioning of the system. (todo?)
