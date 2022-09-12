@@ -86,11 +86,18 @@ A couple of assumptions need to be made regarding the proposed certification mod
 
 
 \section{A Simple Example}
-A simple contextual example will be illustrated below to visualise the proposed idea better, always referring to the assumptions described above. The following example shows how a specific situation could be handled using the proposed idea and will be used as a reference in the next sections:
+A simple contextual example will be illustrated below to visualize the proposed idea better, always referring to the assumptions described above. The following example scenario shows how a specific situation could be handled using the proposed idea and will be used as a reference in the next sections:
 
-Consider a smart city environment, specifically a traffic lights network, and assume that the moment a temporary traffic light is added to such network (e.g. for some road works with x hours expected duration), the system needs a quick re-validation of its security certificate to grant the correct functioning of the network. Where a "classic" standard approach would be too time intensive for something with such a short duration, the proposed idea would solve the issue in a much faster way. 
+Consider a smart city environment where the manufacturer needs to add security cameras. Since the contract with the system's owner requires a certificate of proof that any produced data is secured, the system needs a quick re-validation to prove that the recorded images are securely stored. This scenario could involve many properties; only the most important ones will be considered for simplicity: referring to the properties taxonomy in appendix \ref{taxonomy}, consider the secure storage property, which includes the following micro-properties and attributes:
 
-First, the process should uncover the properties and attributes that changed; a couple of such properties could be the "non-repudiation" and the "data freshness" properties. Once the properties and their attributes have been tested, the process will convert them into a weighted score value; if the score is higher than the pre-established threshold, the certificate can be released. A monitoring process could also be involved and deployed to ensure the correct functioning of the street lights at operation time.
+\begin{itemize}
+    \item The property 1 is the ability to support data encryption at rest (encrypt passwords, device id and other authentication data) and the considered attribute is the following: given that the encryption algorithm is the AES \cite{daemen1999aes}, the attribute's value can be i) 128 bits, ii) 192 bits, or iii) 256 bits.
+    
+    \item The property 2 is the ability to "sanitize" or "purge" specific or all data in the device and the considered attribute is the followingn: given that the storage eraser algorithm is the U.S. Department of Defense (DoD) 5220.22-M algorithm \cite{fischer2017dod}, an attribute can be the number of times the data is overwritten, and the value can be 3 or 7.
+\end{itemize}
+
+
+This example will be developed in the next section, where the proposed process will be deeply described.
 
 
 \section{Ephemeral Certification Process}
@@ -105,7 +112,15 @@ A way to generalize a certification process whose main objective is to be fast a
 \subsection{The Process}
 The first issue to address is the redundant re-certifications; specifically, it is important to filter out all the situations where configuration changes might happen on a device, but there is no way that such changes could influence the security certificate of the system. So, for example, if a device is updated with new features but is not actively communicating with other devices, it can be assumed that it is safe not to issue a certification process immediately. However, if such a device should send a message to another device for any reason, the certification process would be immediately needed, and it should be fast. Hence, to quickly release a certificate, it should be enough to certify only the involved features' security (such as the encryption and non-repudiation properties) and execute an extremely lightweight process to release a certificate with very limited validity (such as one hour or just one interaction). It is also possible to access the revoked certificates, check the process that allowed the certification to be completed first, and test the changes that caused the revocation; this way, the new certificate could benefit with a longer duration. 
 
-As mentioned in the above sections, the process is started by the trigger component (\ref{trigger}); it detects and evaluates changes in the system. The process is triggered if a security property or one of its attributes has been altered somehow. Once the trigger process lists all the attributes involved, an expert person should assign a score range to each attribute and determine a threshold for the macro-properties based on the knowledge of the system and context. At this point, the framework should use the equation in figure \ref{eqn:mapping} to determine the values each attribute has to possess based on the score needed. The final step is to test the attributes for the expected values. The certificate can be released if all the tests succeed; otherwise, new values must be determined for some attributes before a new testing phase. 
+As mentioned in the above sections, the process is started by the trigger component (\ref{trigger}); it detects and evaluates changes in the system. The process is triggered if a security property or one of its attributes has been altered somehow. 
+Referring to the example in section [3.8], the two said properties and their attributes would be found and flagged to signal that they need to be re-certified.
+
+Once the trigger process lists all the attributes involved, an expert person should assign a score range to each attribute and determine a threshold for the macro-properties based on the knowledge of the system and context.
+In the example, the threshold assigned could be a score of 50 for the confidentiality macro-property and 50 for the integrity macro-property, considering a weight for the total score sum of 1; for the attributes' scores, the encryption algorithm could be assigned with the range [20, 50, 70] and the eraser algorithm with the range [50, 75].
+
+At this point, the framework should use the equation in figure \ref{eqn:mapping} to determine the values each attribute has to possess based on the score needed. In the example, to reach the thresholds, both the attributes need to obtain a score of 50, and with the mapping formula, it is trivial to compute the needed values of the attributes: 192 bits for the encryption algorithm and three passes for the eraser algorithm.
+
+The final step is to test the attributes for the expected values. The certificate can be released if all the tests succeed; otherwise, new values must be determined for some attributes before a new testing phase. 
 
 For example, referring to figure \ref{fig:thex}, if the tests on attributes \textit{a} and \textit{b} succeeded but the tests on attribute \textit{c} failed, it is necessary to lower the value of attribute c to make the tests succeed; doing so lowers the final score value under the threshold; to fix that it is needed to raise the values of attributes \textit{a} and \textit{b} in order to re-equilibrate the score.
 
@@ -116,8 +131,7 @@ For example, referring to figure \ref{fig:thex}, if the tests on attributes \tex
     \label{fig:thex}
 \end{figure}
 
-However, such an approach may not have a faster execution time than the current state-of-the-art techniques simply because those techniques imply that the execution phase is composed only of pre-defined test executions over well-aimed and known mechanisms. Therefore, the goal of the proposed solution approach is not to have a faster execution time; instead, it is to have a shorter and more automated overall certification process that would also require considerably fewer resources. Furthermore, directly mapping the properties and attributes to the tests that demonstrate them will be crucial to establishing the values of such attributes. In other words, defining a series of tests are important to determine if a given property or attribute is present. To do so efficiently, it is still necessary to have a set of device or system information that would allow the framework to filter out tests that are known to fail.
-
+However, such an approach may not have a faster execution time than the current state-of-the-art techniques simply because those techniques imply that the execution phase is composed only of pre-defined test executions over well-aimed and known mechanisms. Therefore, the goal of the proposed solution approach is not to have a faster execution time; instead, it is to have a shorter and more automated overall certification process that would also require considerably fewer resources. Furthermore, directly mapping the properties and attributes to the tests that demonstrate them will be crucial to establishing the values of such attributes. In other words, defining a series of tests are important to determine if a given property or attribute is present. However, to do so efficiently, it is still necessary to have a set of device or system information that would allow the framework to filter out tests that are known to fail.
 
 
 \subsection{Ephemeral Certificate Meaning}
