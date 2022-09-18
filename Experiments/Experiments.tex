@@ -1,0 +1,187 @@
+This chapter will illustrate an example of applying the proposed certification scheme to real software, showing how the manufacturer could benefit from such a solution.
+
+\section{Certification Target}
+The software considered for this demonstration is OpenSSL, a robust, commercial-grade, full-featured Open Source Toolkit for the Transport Layer Security (TLS) protocol formerly known as the Secure Sockets Layer (SSL) protocol. The protocol implementation is based on a full-strength general-purpose cryptographic library, which can also be used stand-alone.
+OpenSSL is descended from the SSLeay library developed by Eric A. Young and Tim J. Hudson []. The OpenSSL crypto library (libcrypto) implements various cryptographic algorithms used in various Internet standards. The services provided by this library are used by the OpenSSL implementations of TLS and CMS, and they have also been used to implement many other third-party products and protocols.
+The functionality includes symmetric encryption, public key cryptography, key agreement, certificate handling, cryptographic hash functions, cryptographic pseudo-random number generators, message authentication codes (MACs), key derivation functions (KDFs), and various utilities.
+
+OpenSSL was considered for this demonstration for two main reasons:
+\begin{description}
+    \item[Open-Source] It is open-source software, which allows browsing through the code (mainly written in the C language) publicly available in the official GitHub repository (https://github.com/openssl/openssl) and inspecting all the previous versions of the software with the relative update changes.
+    \item[Vulnerabilities] Researchers found multiple exposed vulnerabilities of the software during the various years of deployment; in this thesis work, only two of them will be considered for the sake of the example, the first identified by the Common Vulnerability Scoring System (CVSS) as [CVE-2014-0224] and the second as [CVE-2016-7798].
+    
+    \begin{itemize}
+        \item {[CVE-2014-0224]} allowed man-in-the-middle attackers [] to use a zero-length master key in certain OpenSSL-to-OpenSSL communications and consequently hijack sessions or obtain sensitive information via a crafted TLS handshake, also known as "CCS Injection" vulnerability [].
+        \item {[CVE-2016-7798]} was a vulnerability of the OpenSSL Ruby gem, which used the same initialization vector for multiple encryptions in a specific configuration; this allowed attackers to decipher encrypted messages easily [].
+
+    \end{itemize}
+\end{description}
+
+OpenSSL is not a product certified by third-party certification authorities with schemes like Common Criteria, but it will be considered as if it was for this demonstration. With standard approaches, the presence of such vulnerabilities would trigger the certificate revocation, obliging the manufacturer to fix the vulnerability and re-certificate the software with a full certification process, costing a considerable amount of money and time; instead, the proposed scheme would allow performing a faster and cheaper re-certification.
+
+\section{Process Walkthrough}
+This section will illustrate a complete walkthrough of the proposed certification scheme over a system based on OpenSSL that has to go through the OpenSSL cryptolibrary update.
+
+\subsection{Trigger Phase}
+The bug that exposed the first vulnerability ([CVE-2014-0224]) consisted of a bad implementation of the DTLS handshake protocol [], which allowed bad actors to defeat any encryption algorithm used effortlessly; hence, the influenced property is the ability to manage cryptographic keys securely.
+
+The bug allowed entities to accept the ChangeCipherSpec message at timings different from the intended ones; hence, the attribute of the property that will be considered is the timing of the CCS message, which must satisfy two conditions to be accepted: i) there are no fragments from the handshake uncompleted (e.g. certificate validation) and ii) the next message received is Finished.
+
+The bug that exposed the second vulnerability ([CVE-2016-7798]) consisted of a bad implementation of the Ruby Openssl gem when using the AES algorithm in Galois/Counter Mode (GCM) [], which allowed each initialization vector to be used multiple times; this resulted in weak encryption of data. The issue was caused by the initialization vector being set before the key when it should have been set after it. The attributes considered in this process are the encryption algorithm (AES-GCM), the satisfaction of the requirement of having a different initialization vector every time and the correlated certificate signing algorithm, which is also affected by this issue.
+
+It is important to note that both the vulnerabilities described above affect the system's confidentiality; hence, confidentiality will be the only macro-property considered.
+
+After the system receives the update, the trigger component analyses the changes, comparing the old certificates with the updated properties and attributes and extracting the following properties and attributes:
+\begin{itemize}
+    \item Ability to execute cryptographic mechanisms of appropriate strength and performance
+    \begin{itemize}
+        \item AES-GCM conditions
+        \item AES-GCM key length
+    \end{itemize}
+    \item Ability to perform authenticated encryption algorithms
+    \begin{itemize}
+        \item DTLS handshake conditions
+    \end{itemize}
+    \item Ability to verify digital signatures
+    \begin{itemize}
+        \item Signature algorithm and key length
+    \end{itemize}
+
+\end{itemize}
+
+After listing the impacted properties and attributes and making them available through the Changes function, the trigger signals a manual operator that the process requires attention.
+
+\subsection{Manual Revision Phase}
+An expert manual operator accesses the properties and attributes through the Changes function and deals with three main tasks:
+\begin{itemize}
+    \item According to technological standards, the operator has to assign to each attribute a list of values; in this example, they are:
+    \begin{itemize}
+        \item {[1]} (satisfied or not) for the AES-GCM conditions
+        \item {[128, 192, 256]} for the key length of the AES-GCM algorithm
+        \item {[1]} (satisfied or not) for the DTLS handshake conditions
+        \item {[sha-1WithRSAEncryption, sha-224WithRSAEncryption, sha-256WithRSAEncryption, sha-384WithRSAEncryption, sha-512WithRSAEncryption]} for the signature algorithm and key length
+    \end{itemize}
+    
+    \item According to his assumed knowledge, he assigns a range of scores that directly map to the values of each attribute:
+    \begin{itemize}
+        \item {[20]} for the AES-GCM conditions
+        \item {[5, 10, 20]s} for the key length of the AES-GCM algorithm
+        \item {[20]} for the DTLS handshake conditions
+        \item {[5, 10, 20, 50, 70]} for the signature algorithm and key length
+    \end{itemize}
+    
+    \item According to his assumed knowledge, he assigns a score threshold to the impacted macro-properties; in this case, to the confidentiality macro-property, he assigns a threshold of 80 and a weight of 1 (the final weighted sum is ignored for this example).
+\end{itemize}
+
+\subsection{Score Computation and Testing}
+At this point, the system must compute the minimum value needed by each attribute to reach the threshold with the minimum possible effort. In this case, since the threshold is 80, each attribute needs a score of 20 and will be tested for the corresponding value:
+\begin{itemize}
+    \item 1 for the AES-GCM conditions
+    \item 256 for the key length of the AES-GCM algorithm
+    \item 1 for the DTLS handshake conditions
+    \item sha-256WithRSAEncryption for the signature algorithm and key length
+\end{itemize}
+
+If the system holds such requirements, then the certificate can be released.
+
+All tests were executed on a virtual machine running Linux Ubuntu version 22.04.1.
+The tests for CVE-2014-0224 were executed using a client-server setup; the server was tested with OpenSSL version 0.9.8y, known for being vulnerable to the CCS injection attack, and version 3.0.2, which implements the security patch to the vulnerability. Both server instances were initialized with the same commands:
+
+First, it is required to generate a new key and a certificate on the server that will be used to establish a secure SSL/TLS connection with the following command:
+"openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes"; the command req is used to create a self-signed test certificate with the argument x509, and the other arguments are: i) newkey rsa:2048 generates a new private RSA key of size 2048 bits, ii) keyout copies the generated key into a file named key.pem, iii) out copies the generated certificate into a file named cert.pem, iv) days specifies the validity duration of the certificate and v) nodes avoids encrypting the generated private key.
+Next, the server can be started using the following command:
+"openssl s\_server -key key.pem -cert cert.pem -accept 44330 -www"; the command s\_server implements a generic SSL/TLS server which accepts connections from remote clients speaking SSL/TLS, and the arguments are: i) key specifies the private key to use, ii) cert specifies the certificate file to use, iii) accept specifies the port to listen on for connections, and iv) www sets the server to send a status message back to the client when it connects.
+
+On the client side, executing a script designed to check if the server is vulnerable to the CCS injection exploit is sufficient; such a script is publicly available on [nmap.org website] and uses the open-source tool Nmap []. The script works by sending a 'ChangeCipherSpec' message out of order and checking whether the server returns a 'UNEXPECTED\_MESSAGE' alert record or not. Since a non-patched server would simply accept this message, the CCS packet is sent twice in order to force an alert from the server. The server is vulnerable if the alert type is different from 'UNEXPECTED\_MESSAGE'; the script is shown in appendix B []. The output provided by the script is the following for the vulnerable server test:  
+
+\begin{verbatim}
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-17 19:23 CEST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.00012s latency).
+
+PORT      STATE SERVICE
+44330/tcp open  unknown
+| ssl-ccs-injection: 
+|   VULNERABLE:
+|   SSL/TLS MITM vulnerability (CCS Injection)
+|     State: VULNERABLE
+|     Risk factor: High
+|      OpenSSL before 0.9.8za, 1.0.0 before 1.0.0m, and 1.0.1 before 1.0.1h
+|      does not properly restrict processing of ChangeCipherSpec messages,
+|      which allows man-in-the-middle attackers to trigger use of a zero
+|      length master key in certain OpenSSL-to-OpenSSL communications, and
+|      consequently hijack sessions or obtain sensitive information, via
+|      a crafted TLS handshake, aka the "CCS Injection" vulnerability.
+|           
+|     References:
+|       http://www.cvedetails.com/cve/2014-0224
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-0224
+|_      http://www.openssl.org/news/secadv_20140605.txt
+
+Nmap done: 1 IP address (1 host up) scanned in 1.18 seconds
+\end{verbatim}
+
+and the following for the patched server test:
+\begin{verbatim}
+Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-17 19:26 CEST
+Nmap scan report for localhost (127.0.0.1)
+Host is up (0.000079s latency).
+
+PORT      STATE SERVICE
+44330/tcp open  unknown
+
+Nmap done: 1 IP address (1 host up) scanned in 0.17 seconds
+\end{verbatim}
+
+The test results show that the server running OpenSSL version 3.0.2 is no longer vulnerable to the CCS injection attack.
+
+
+The test for CVE-2016-7798 was executed by replicating the bug using OpenSSL's Ruby gem; moreover, the execution was done using Ruby version 2.0.0p648, known for being affected by the bug, and Ruby version 3.1.0p0, which implements the security patch to the vulnerability. The script to check if the vulnerability is present is the following: 
+\begin{lstlisting}[language=Ruby]
+require 'openssl'
+require 'set'
+
+cipherTextsSet = Set[]
+iterations = 1000000
+
+for i in 1..iterations
+
+    # Initialize Cipher
+    cipher = OpenSSL::Cipher.new('aes-256-gcm')
+    cipher.encrypt
+
+    # Set random IV
+    cipher.random_iv
+ 
+    # Set key
+    key = "00000000000000000000000000000000"
+    cipher.key = key
+
+    # Encrypt message
+    message = 'this is a test message'
+    cipherText = cipher.update(message) + cipher.final
+
+    
+    # Add encrypted text to set
+    cipherTextsSet.add(cipherText)
+end
+\end{lstlisting}
+
+The steps of the script are simple and are repeated one million times: i) initialization of the cipher object, ii) set a random initialization vector into the cipher, iii) set a 256bit key into the cipher, and iv) encrypt the message; the key and the message are always the same, and the initialization vector is theoretically always different. Therefore, the bug is reproducible when executing the operations in this same order, having the initialization vector set before the key. The encrypted messages are then inserted into a Set object, which filters out all the identical strings and allows counting the unique values obtained.
+
+The output resulting from the vulnerable version is the following:
+\begin{verbatim}
+==> 1000000 messages have been encrypted.
+==> The encrypted texts are all identical.
+\end{verbatim}
+
+and the output resulting from the patched version is the following:
+\begin{verbatim}
+==> 1000000 messages have been encrypted.
+==> Succesfully generated 1000000 different encrypted texts.
+\end{verbatim}
+
+The test proves that the vulerability is not present anymore in the patched version.
+
+
+
