@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{report}
+\documentclass[a4paper, 12pt]{report}
 %    \renewcommand{\baselinestretch}{1.6}      % interline spacing
 %
 % \includeonly{}
@@ -19,6 +19,7 @@
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
+
 
 % per le accentate
 \usepackage[utf8]{inputenc}
@@ -89,16 +90,16 @@ asdjhgftry.
 
 \chapter{State Of The Art}
 \label{cap2}
-\include{State_of_the_art/StateOfTheArt}
+\input{State_of_the_art/StateOfTheArt}
 
 
 \chapter{Methodology}
 \label{cap3}
-\include{Methodology/Methodology}
+\input{Methodology/Methodology}
 
 \chapter{Experiments}
 \label{cap4}
-\include{Experiments/Experiments}
+\input{Experiments/Experiments}
 
 \chapter{Conclusions}
 \label{cap5}
@@ -108,16 +109,48 @@ asdjhgftry.
 \label{taxonomy}
 \input{State_of_the_art/Prop-Taxonomy}
 
-\chapter{CCS Injection Nmap Script}
+\chapter{Scripts Used For Testing}
+\section{CCS Injection Nmap Script}
 \label{ccs}
 \lstinputlisting[basicstyle=\footnotesize]{Files/ssl-ccs-injection}
+
+\section{CVE-2016-779 Ruby Scripts}
+\label{IV}
+\textbf{Server}
+\label{iv_server}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/IV/server.rb}
+\textbf{Client}
+\label{iv_client}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/IV/client.rb}
+
+\newpage
+\section{Signature Algorithm Ruby Scripts}
+\label{sig}
+\textbf{SocketIO}
+\label{sig_io}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/socketIO.rb}
+\textbf{Server}
+\label{sig_server}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/server.rb}
+\textbf{Client}
+\label{sig_client}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/client.rb}
+
+\section{AES-256-GCM Algorithm Ruby Scripts}
+\label{aes}
+\textbf{Server}
+\label{aes_server}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/server.rb}
+\textbf{Client}
+\label{aes_client}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/client.rb}
 
 %
 %			BIBLIOGRAFIA
 %
 \begin{thebibliography}{00}
 
-\include{BibItems}
+\input{BibItems}
 
 \end{thebibliography}
 % 
