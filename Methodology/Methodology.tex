@@ -1,32 +1,83 @@
-The recertification process is triggered when specific security conditions are met after a system's update; the components of the such process need to adapt to the new approach, and for the current step this thesis is taking, they will be modelled as follows:
+The recertification process is triggered when specific security conditions are met after a system undergoes a configuration change; the components of such process need to adapt to the new approach, and for the current step this thesis is taking, their models inevitably need to change. Therefore, this chapter introduces all the required components: i) attributes, ii) properties, iii) trigger, and iv) tests and evidence collection models. In addition, the scoring system guides the certification process, allowing one to express how strong the certificate should be. Moreover, properties and attributes are still at the basis of the proposed certification scheme, but properties are now referred to as micro-properties, each of whom is categorized under a specific macro-property; such separation grants a wider grade of control over the scoring system. Furthermore, the trigger is a new component whose task is to send an alert whenever a configuration change alters one or more security properties, detailing all the needed information about such properties and the involved attributes. Finally, the evidence collection model is built around the other components' models and allows specifying detailed information about the testing phase that must be executed. The interaction between such components and the general flow of the proposed process is shown in figure \ref{fig:comps}.
+
+Given the above overview of the main components of the proposed certification scheme, it is useful to keep in mind a simple example scenario that will support the further explanation of the components in the following sections.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[scale=0.7]{images/components.png}
+    \caption{Proposed scheme's components and interactions}
+    \label{fig:comps}
+\end{figure}
+
+
+\section{A Simple Example Scenario}
+\label{scenario}
+This section illustrates a simple contextual example to improve the visualization the proposed idea; we note that many details of this example are further developed in the following sections. This example scenario shows how a specific situation could be handled using the proposed scheme and will be used as a reference in the next sections:
+
+Let us consider a smart city environment where the manufacturer needs to add security cameras. Since the contract with the system's owner requires a certificate of proof that any produced data is secured, the system needs a quick re-validation to prove that the recorded images are indeed securely stored. This scenario could involve many properties, however, only two of them and one attribute for each property will be considered in this example for simplicity: referring to the properties taxonomy in appendix \ref{taxonomy}, let us consider the secure storage paragraph, which includes the following properties and attributes:
+
+\begin{enumerate}
+    \item The ability to support data encryption at rest (encrypt passwords, device id and other authentication data) and the considered attribute is the following: given that the encryption algorithm is the AES \cite{daemen1999aes}, the attribute's value can be i) 128 bits, ii) 192 bits, or iii) 256 bits.
+    
+    \item The ability to "sanitize" or "purge" specific or all data in the device and the considered attribute is the followingn: given that the storage eraser algorithm is the U.S. Department of Defense (DoD) 5220.22-M algorithm \cite{fischer2017dod}, an attribute can be the number of times the data is overwritten, and the value can be 3 or 7.
+\end{enumerate}
+
+
+
+
 
 \section{The scoring system}
-Before introducing the main components of the certification scheme, it is important to introduce the concept of score; the score value is assigned to properties and attributes based on their values, the system's purpose and the context. The weighted sum of all the properties scores determines the certificate's strength; additionally, for the certificate to be valid, such a sum must reach a pre-determined threshold. Experts decide the score values and the thresholds with the help of taxonomies.
+Before introducing the main components of the certification scheme, it is important to present the concept of score and how the scoring system works; a score is assigned to each attribute based on its value and the purpose and context of the entire system. The score of a property is then calculated by summing the scores of its attributes. Finally, the weighted sum of all the properties scores determines the certificate's strength; additionally, for the certificate to be valid, such a total must reach a pre-determined threshold. Expert manual operators should decide the score values and the thresholds with the help of taxonomies, standards and knowledge.
+
+\begin{example}
+\label{xmp:1}
+Following the example scenario in section \ref{scenario}, the ranges of scores assigned to the attributes could be [10, \dots, 70] for the AES algorithm attribute and [40, \dots, 80] for the U.S. DoD 5220.22-M algorithm.
+Since the sum of the properties scores finally defines the certificate's strength, such a sum must reach at least the defined threshold, which could be set at 100 with a weight of 1, for example.
+\end{example}
 
 
 \section{Attributes}
-As for the state-of-the-art approaches, properties will still be modelled using attributes that define them at a lower level; more specifically, in the proposed approach, attributes define micro-properties (see properties paragraph). An attribute \(a\) is now modelled as a pair \((\hat{a}, [value_{min}, value_{max}])\) where \(\hat{a}\) is the abstract attribute and \(value_{i}\) is a possible value of \(a\). It should be noted that the range of possible values is considered sorted by relevance, from the less relevant to the most relevant. For example, the value of the response time of a device is more relevant the lower it is; contrary, the value of a storage size is more relevant the bigger it is.
+As for the state-of-the-art approaches, properties will still be modelled using attributes that define them at a lower level; more specifically, in the proposed approach, attributes define micro-properties, and are defined in a slightly different way from state-of-the-art schemes. 
+
+\begin{defn}
+An attribute \(a\) is defined as a pair \((\hat{a}, [value_{min}, value_{max}])\) where \(\hat{a}\) is the abstract attribute and \(value_{i}\) is a possible value of \(a\). 
+\end{defn}
+
+In other words, an attribute is now defined by its name and the list of values it can assume. We note that the range of possible values is considered sorted by relevance, from the less relevant to the most relevant. For example, the value of the response time of a device is more relevant the lower it is; contrary, the value of a storage size is more relevant the bigger it is.
 
 The score range of an attribute should be decided by an expert person having knowledge of the system and the context; such range should be balanced, setting the lowest score corresponding to the lowest relevant valid value and vice-versa.
-The linear mapping (mapping that maintains a constant ratio between points) operation in figure \ref{eqn:mapping} allows mapping values between two ranges, in this case, values and scores.
+The linear mapping (mapping that maintains a constant ratio between points) operation in the equation \ref{eqn:mapping} allows mapping values between two ranges, in this case, values and scores.
 
-\begin{figure}[h]
-
-
-\[q = \left \{ (p - A) \times \frac{D - C}{B - A} + C \bigm| [A, B] \in \mathbb{N} \wedge [C, D] \in \mathbb{N}  \right \} \]
-\caption{Values to score mapping}
+\begin{equation}
 \label{eqn:mapping}
-\end{figure}
+    q = \left \{ (p - A) \times \frac{D - C}{B - A} + C \bigm| [A, B] \in \mathbb{N} \wedge [C, D] \in \mathbb{N}  \right \}
+\end{equation}
 
 Considering the range of valid attribute values from A to B, the range of scores from C to D, and the actual attribute value p, the mapping allows computation of the corresponding score value q.
-A linear mapping requires two operations: a scaling operation to make the ranges the same size and an offset operation to align the ranges. Since scaling is always relative to the origin, the first step is to shift the range [A, B] to the origin by subtracting A from p; next, scale p by the ratio of the range sizes (D-C)/(B-A). Finally, shift this value to the start of the [C, D] range by adding C, resulting in the equation in figure \ref{eqn:mapping}. By rearranging the terms of the equation, it is possible to extract the scale and offset factors that compose it:
+A linear mapping requires two operations: a scaling operation to make the ranges the same size and an offset operation to align the ranges. Since scaling is always relative to the origin, the first step is to shift the range [A, B] to the origin by subtracting A from p; next, scale p by the ratio of the range sizes (D-C)/(B-A). Finally, shift this value to the start of the [C, D] range by adding C, resulting in the equation \ref{eqn:mapping}. By rearranging the terms of the equation, it is possible to extract the scale and offset factors that compose it:
 
 \[scale = \frac{D - C }{B - A}\]
 \[offset = -A \times \frac{D - C}{B - A} + C\]
 \[q = \left ( p \times scale \right ) + offset\]
 
 
-This equation maps the attribute's values range to the scores range spreading the values evenly (e.g., “equal importance” expressed with W[0] = 1/n, W[1] = 1/n, \dots , W[n]= 1/n). If the attribute's values are not numerical, they should be pre-emptively mapped to a list of indices; the indices list should then be used instead of the attribute's values. For example, for the micro-property Interface Control (ref), it is necessary to have a list of supported communication technologies that could include IEEE 802.11, Bluetooth and Ethernet connections; such a list might be mapped with an index list [1,2,3] where each index represents one of the elements.
+This equation maps the attribute's values range to the scores range spreading the values evenly (e.g., “equal importance” expressed with W[0] = 1/n, W[1] = 1/n, \dots , W[n]= 1/n). If the attribute's values are not numerical, they should be pre-emptively mapped to a list of indices; the indices list should then be used instead of the attribute's values; finally, the result should be rounded up in case it does not exactly match a value because rounding down would result in a weaker-than-expected certificate. For example, for the micro-property Interface Control (ref), it is necessary to have a list of supported communication technologies that could include IEEE 802.11, Bluetooth and Ethernet connections; such a list might be mapped with an index list [1,2,3] where each index represents one of the elements.
+
+\begin{example}
+Following Example \ref{xmp:1}, equation \ref{eqn:mapping} can be used to determine which values will be tested for each attribute. First, a couple of steps need to be done: i) substitute the lists of values with lists of indices; [1,2,3] for the AES algorithm attribute (\(q_1\)) and [1,2] for the U.S. DoD 5220.22-M algorithm attribute (\(q_2\)), and ii) the threshold of 100 should be evenly distributed across the score ranges to determine the score each attribute should obtain, namely, T/n where T is the threshold (100) and n is the total number of attributes (2). Then, the values can be discovered using the equation:
+\begin{align*}
+  q_1 = (50 - 10) \times \frac{3 - 1}{70 - 10} + 1\\
+  q_1 = 40 \times \frac{2}{60} + 1 \\
+  \llap{$\rightarrow$\hspace{50pt}} q_1 = \Bigl\lceil\frac{7}{3}\Bigr\rceil = 3
+\end{align*}
+\begin{align*}
+  q_2 = (50 - 40) \times \frac{2 - 1}{80 - 40} + 1\\
+  q_2 = 10 \times \frac{1}{40} + 1 \\
+  \llap{$\rightarrow$\hspace{50pt}} q_2 = \Bigl\lceil\frac{5}{4}\Bigr\rceil = 2
+\end{align*}
+
+When translating back the indices to the real values, the results show that to reach at least the set threshold of 100, attribute \(q_1\) needs to have a value of 256 bits and attribute \(q_2\) needs to have a value of 7.
+\end{example}
 
 The mapping also allows the system to compute the minimum values that each attribute of each micro-property needs to have to release a certificate with the minimum effort. Such values should then be gathered with a simple getter function.
 
@@ -34,48 +85,98 @@ The mapping also allows the system to compute the minimum values that each attri
 \[GetMinValue(aj) \rightarrow {value_a}_j\]
 
 \section{Properties}
-The old properties are now referred to as micro-properties, and they have been organized into three categories referred to as macro-properties. Micro-properties are now modelled as a pair \(\left (\hat{p}, \left \{  (a_1, value), \dots , (a_n, value)\right \} \right )\) 
-where \(\hat{p}\) is the abstract micro-property and \(\left ( a_i ,value \right )\) is a pair representing an attribute of the property and its value.
+The old properties are now referred to as micro-properties, and they have been organized into three categories referred to as macro-properties.
+\begin{defn}
+A micro-property p is a pair \(\left (\hat{p}, \left \{  (a_1, value_1), \dots , (a_n, value_n)\right \} \right )\) 
+where \(\hat{p}\) is the abstract micro-property and \(\left ( a_i ,value_i \right )\) is a pair representing an attribute of the property and its value.
+\end{defn}
 
-Macro-properties are intended to regroup micro-properties that influence similar aspects of the system; more specifically, every micro-property contributes to one of the macro-properties, namely, Confidentiality, Integrity and Availability. Macro-properties have a specific function in the proposed approach, helping with the micro-properties score attribution; since the thresholds will be based on the macro-properties, every micro-property's score will influence its macro-property final weighted score.
-
-A macro-property of the system is then formalized as a triple \\ \( \left ( \hat{P}, \left \{(p_1, score), \dots , (p_n, score )\right \}, wscore \right ) \)
-where \(\hat{P}\) is the abstract macro-property, \( \left (p_i, score \right ) \) is a pair representing a micro-property and its score, and wscore is the total weighted score of the macro-property. The weight determining the final result should depend on the context. 
+In other words, micro-properties are defined by their attributes and the corresponding values.
 
 
+On the other hand, macro-properties are intended to regroup micro-properties that influence similar aspects of the system; more specifically, every micro-property contributes to one of the macro-properties, namely, \textit{Confidentiality}, \textit{Integrity} and \textit{Availability}. Macro-properties have a specific function in the proposed approach, helping with the micro-properties score attribution; since the thresholds will be based on the macro-properties, every micro-property's score will influence its macro-property final weighted score.
 
+\begin{defn}
+A macro-property of the system P is defined as a triple \\ \( \left ( \hat{P}, \left \{(p_1, score), \dots , (p_n, score )\right \}, wscore \right ) \) where \(\hat{P}\) is the abstract macro-property, \( \left (p_i, score \right ) \) is a pair representing a micro-property and its score, and \textit{wscore} is the total weighted score of the macro-property; the weight determining the final result should depend on the context.
+\end{defn}
+
+By way of explanation, macro-properties act as abstract containers of micro-properties and scores, allowing for better control over which categories of micro-properties should be prioritized during a certification process.
+
+\begin{example}
+Following the example in Section \ref{scenario}, the properties described translate directly into micro-properties, which are then categorized under the Confidentiality macro-property; the threshold set also refers to the same macro-property.
+\end{example}
 
 \section{Trigger}
 \label{trigger}
-The trigger is a component detecting security changes in the system, evaluating them and acting in case these changes should impact crucial security properties. The trigger should also have continuous access to the system's information and certificates to detect changes accurately. The framework should access such changes through a \textit{Changes} function: 
+The trigger is a component detecting security changes in the system, evaluating them and acting in case these changes should impact crucial security properties. The trigger should also have continuous access to the system's information and certificates to detect changes accurately. The framework should access such changes through the \textit{Changes} function. 
 
-\[Changes() \rightarrow \left \{ \left ( p_j, \left \{ a_k \right \} \right ) \right \} \]
+\begin{defn}
+The \textit{Changes} function is defined as \(Changes() \rightarrow \left \{ \left ( p_j, \left \{ a_k \right \} \right ) \right \} \), where \(p_j\) is a micro-property of the system and \( \left \{a_k \right \} \) is the set of specific attributes impacted by the update.
+\end{defn}
 
-Where \(p_j\) is a micro-property of the system and \( \left \{a_k \right \} \) is the set of specific attributes impacted by the update. Such a function includes multiple background operations that the system has to deal with; these functionalities should probably include a monitoring framework for change detection. The monitoring should be invoked automatically every time a system (or context) update occurs. It should then compare the updated changes with the security properties and their attributes; any change over a security property should be immediately added to the Changes function output list. Moreover, the trigger component should also be notified about the availability of new changes.
+Such a function includes multiple background operations that the system has to deal with; these functionalities should probably include a monitoring framework for change detection. The monitoring should be invoked automatically every time a system (or context) update occurs. It should then compare the updated changes with the security properties and their attributes; any change over a security property should be immediately added to the \textit{Changes} function output list. Moreover, the trigger component should also be notified about the availability of new changes.
 
 
 \section{Evidence Collection Model}
 
-Evidence collection is the process that, given a system and a property, gathers evidence proving the system holds such property through a series of tests. Such tests are now modelled as a tuple \( \left ( \hat{p}, \left (a_j, value_j, c_j, \left \{ cnd_k \right \} \right ) \right ) \)  where \( \hat{p} \) is the micro-property to test, \(a_j\) is an attribute of the micro-property, 
-\(value_j\) is the expected value of the attribute, cj is the code to execute, and \( \left \{ cndk \right \} \) is the set of conditions that need to be satisfied by the test execution.
+Evidence collection is the process that, given a system and a property, gathers evidence proving the system holds such property through a series of tests.
 
-The evidence collection model is finally defined as a set of elements, one for each micro-property, modelled as \(  \left \{ \left \{ t_j \right \} {_{\hat{p}_i}} \right \} {_{\hat{P}_j}} \); where \( \hat{P}_j \) is a macro-property,  \( \hat{p}_i \) is a micro-property, \(a_j\) is an attribute of the micro-property, and \(t_j\) is the test to evaluate such an attribute.
+\begin{defn}
+    A test \textit{t} is now modelled as a tuple \( \left ( \hat{p}, \left (a_j, value_j, c_j, \left \{ cnd_k \right \} \right ) \right ) \) where
+    \begin{itemize}
+        \item \( \hat{p} \) is the micro-property to test;
+        \item \(a_j\) is an attribute of the micro-property;
+        \item \(value_j\) is the expected value of the attribute;
+        \item \(c_j\) is the code to execute to gather evidence over the attribute \(a_j\);
+        \item \( \left \{ cndk \right \} \) is the set of conditions that need to be satisfied by the test execution.
+    \end{itemize}
+\end{defn}
 
+In other words, each test case is specifically aimed at demonstrating that a system's attribute holds for a specific value; once all the attributes included by a micro-property have been demonstrated, the micro-property can also be considered demonstrated.
+Additionally, the evidence collection model allows having a more defined structure over
+which evidence can be gathered.
+
+\begin{defn}
+The evidence collection model \(\mathcal{E}\) is defined as a set of elements, one for each micro-property, and it is modelled as \(  \left \{ \left \{ t_j \right \} {_{\hat{p}_i}} \right \} {_{\hat{P}_j}} \) where \( \hat{P}_j \) is a macro-property, \( \hat{p}_i \) is a micro-property, and \(t_j\) is the test to evaluate the attribute \textit{j} (\(a_j\)).
+\end{defn}
+
+In other words, the evidence collection model E is a list of test cases where each test aims at verifying that an attribute holds a specific value. The gathered evidence is then eventually stored in the released certificate.
 
 \section{Certification Model Definition}
-Once the trigger component starts the process by providing the system changes information, an important component that needs to be used for the recertification is the set of old certificates \(\mathcal{C}\); they contain all the demonstrated properties with their score and collected evidence prior to the update. Therefore, the proposed framework is expected to provide a function to obtain the certification model for the updated system; such function is formalized as follows:
+Once the trigger component starts the process by providing the system changes information, an important component that needs to be used for the recertification is the set of old certificates \(\mathcal{C}\); they contain all the demonstrated properties with their score and collected evidence prior to the update. Therefore, the proposed scheme is expected to provide a function \textit{Ephemeral} to obtain the certification model for the updated system.
 
-\[Ephemeral(\mathcal{C}, system_{t+1}) \rightarrow {\mathcal{M}}_{t+1} \]
+\begin{defn}
+The \textit{Ephemeral} function is defined as \(Ephemeral(\mathcal{C}, system_{t+1}) \rightarrow {\mathcal{M}}_{t+1} \), where 
+\(\mathcal{C}\) is the set of certificates released for the system up to the time \textit{t}, \textit{t+1} represents the time after the update, and \(\mathcal{M}_{t+1}\) is the certification model for the updated system.
+\end{defn}
 
+Once the new certification model is computed, it will be possible to call the \textit{Execute} function that will execute the tests on the system based on the given certification model returning the new certificate if all the requirements are satisfied. 
 
-Once the new certification model is computed, it will be possible to call the Execute function that will execute the tests on the system based on the given certification model returning the new certificate if all the requirements are satisfied. The resulting certification model is defined as 
-\(\mathcal{M} = \left ( \left ( P_1, P_2, P_3 \right ), \mathcal{E} \right )\) where \(P_1\) is the Confidentiality macro-property, \(P_2\) is the Integrity macro-property and \(P_3\) is the Availability macro-property, and \( \mathcal{E} \) is the evidence collection model.
+\begin{defn}
+The certification model is defined as 
+\(\mathcal{M} = \left ( \left ( P_1, P_2, P_3 \right ), \mathcal{E} \right )\) where \(P_i\) is a macro-property and \( \mathcal{E} \) is the evidence collection model.
+\end{defn}
+Namely, the macro-properties that compose the certification model \(\mathcal{M}\) are:
+\begin{itemize}
+    \item \(P_1\) is the Confidentiality macro-property
+    \item \(P_2\) is the Integrity macro-property
+    \item \(P_3\) is the Availability macro-property
+\end{itemize}
  
 The framework should then be able to call the \textit{Execute} function using the certification model to deliver a new ephemeral certificate.
 
-\[ Execute(\mathcal{M}_{t+1}) \rightarrow \mathcal{C} \cup \{c_{t+1}\} \]
 
-Where \( \mathcal{C} = {c_0, \dots , c_t} \) and \(c_i\) is the certificate released at time \(i\); each certificate is modelled as a set of pairs \( (p, \{e_j\}) \) where \(p\) is a micro-property with the set of evidences supporting it. The system will finally be attributed a new certificate that will complement all the previously obtained ones.
+\begin{defn}
+The \textit{Execute} function is defined as \( Execute(\mathcal{M}_{t+1}) \rightarrow \mathcal{C} \cup \{c_{t+1}\} \), where \( \mathcal{C} = {c_0, \dots , c_t} \) and \(c_i\) is the certificate released at time \(i\).
+\end{defn}
+ The execute function allows obtaining the new certificate for the updated system and automatically adds it to the set of system's certificates \(\mathcal{C}\).
+ 
+ \begin{defn}
+ Each certificate is then defined as a set of pairs \( (p, \{e_j\}) \), where \(p\) is a micro-property with the set of evidences supporting it \( (\{e_j\}) \).
+ \end{defn}
+ 
+ The system will finally be attributed a new certificate that will complement all the previously obtained ones and will carry all the information of the re-certification process that occurred after the update, including tested micro-properties and attributes, tests information and gathered evidence.
+
 
 
 \section{Assumptions}
@@ -85,19 +186,7 @@ A couple of assumptions need to be made regarding the proposed certification mod
 
 
 
-\section{A Simple Example}
-A simple contextual example will be illustrated below to visualize the proposed idea better, always referring to the assumptions described above. The following example scenario shows how a specific situation could be handled using the proposed idea and will be used as a reference in the next sections:
 
-Consider a smart city environment where the manufacturer needs to add security cameras. Since the contract with the system's owner requires a certificate of proof that any produced data is secured, the system needs a quick re-validation to prove that the recorded images are securely stored. This scenario could involve many properties; only two properties and one attribute for each property is considered in this example for simplicity: referring to the properties taxonomy in appendix \ref{taxonomy}, consider the secure storage property, which includes the following micro-properties and attributes:
-
-\begin{itemize}
-    \item The property 1 is the ability to support data encryption at rest (encrypt passwords, device id and other authentication data) and the considered attribute is the following: given that the encryption algorithm is the AES \cite{daemen1999aes}, the attribute's value can be i) 128 bits, ii) 192 bits, or iii) 256 bits.
-    
-    \item The property 2 is the ability to "sanitize" or "purge" specific or all data in the device and the considered attribute is the followingn: given that the storage eraser algorithm is the U.S. Department of Defense (DoD) 5220.22-M algorithm \cite{fischer2017dod}, an attribute can be the number of times the data is overwritten, and the value can be 3 or 7.
-\end{itemize}
-
-
-This example will be developed in the next section, where the proposed process will be deeply described.
 
 
 \section{Ephemeral Certification Process}
