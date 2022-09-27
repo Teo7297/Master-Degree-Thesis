@@ -1,98 +1,215 @@
-This chapter will illustrate an example of applying the proposed certification scheme to real software, showing how the manufacturer could benefit from such a solution.
-
-\section{Certification Target}
-The software considered for this demonstration is OpenSSL, a robust, commercial-grade, full-featured Open Source Toolkit for the Transport Layer Security (TLS) protocol formerly known as the Secure Sockets Layer (SSL) protocol. The protocol implementation is based on a full-strength general-purpose cryptographic library, which can also be used stand-alone.
-OpenSSL is descended from the SSLeay library developed by Eric A. Young and Tim J. Hudson []. The OpenSSL crypto library (libcrypto) implements various cryptographic algorithms used in various Internet standards. The services provided by this library are used by the OpenSSL implementations of TLS and CMS, and they have also been used to implement many other third-party products and protocols.
-The functionality includes symmetric encryption, public key cryptography, key agreement, certificate handling, cryptographic hash functions, cryptographic pseudo-random number generators, message authentication codes (MACs), key derivation functions (KDFs), and various utilities.
-
-OpenSSL was considered for this demonstration for two main reasons:
+This chapter illustrates an example of applying the proposed certification scheme to real software, showing how the manufacturer could benefit from such a solution. More specifically, the next section introduces the certification target considered for the demonstration: a web service that uses open-source OpenSSL to establish secure and encrypted communications with its clients. Moreover, we show the basics of a classic approach (e.g. Common Criteria) over the new product extracting the main properties and attributes. Additionally, we focus on the OpenSSL part of the application since two major vulnerabilities affected such software in the past and are eligible for certificate invalidation, given the properties they directly affected. Finally, we show how the proposed certification scheme can be used to solve the issue and release a complementary certificate that brings the system's trustworthiness back to its original strength with the lowest effort. OpenSSL was introduced as core component of the system for two main reasons:
 \begin{description}
     \item[Open-Source] It is open-source software, which allows browsing through the code (mainly written in the C language) publicly available in the official GitHub repository (https://github.com/openssl/openssl) and inspecting all the previous versions of the software with the relative update changes.
-    \item[Vulnerabilities] Researchers found multiple exposed vulnerabilities of the software during the various years of deployment; in this thesis work, only two of them will be considered for the sake of the example, the first identified by the Common Vulnerability Scoring System (CVSS) as [CVE-2014-0224] and the second as [CVE-2016-7798].
-    
-    \begin{itemize}
-        \item {[CVE-2014-0224]} allowed man-in-the-middle attackers [] to use a zero-length master key in certain OpenSSL-to-OpenSSL communications and consequently hijack sessions or obtain sensitive information via a crafted TLS handshake, also known as "CCS Injection" vulnerability [].
-        \item {[CVE-2016-7798]} was a vulnerability of the OpenSSL Ruby gem, which used the same initialization vector for multiple encryptions in a specific configuration; this allowed attackers to decipher encrypted messages easily [].
-
-    \end{itemize}
+    \item[Vulnerabilities] Researchers found multiple exposed vulnerabilities of the software during the various years of deployment; in this thesis work, only two of them will be considered for the sake of the example, the first identified by the Common Vulnerability Scoring System (CVSS) as \texttt{CVE-2014-0224} and the second as \texttt{CVE-2016-7798}.
 \end{description}
 
-OpenSSL is not a product certified by third-party certification authorities with schemes like Common Criteria, but it will be considered as if it was for this demonstration. With standard approaches, the presence of such vulnerabilities would trigger the certificate revocation, obliging the manufacturer to fix the vulnerability and re-certificate the software with a full certification process, costing a considerable amount of money and time; instead, the proposed scheme would allow performing a faster and cheaper re-certification.
+With standard approaches, the presence of such vulnerabilities in a core component would trigger the certificate revocation, obliging manufacturers to install the patches to the vulnerabilities and re-certificate the software with a full certification process, costing a considerable amount of money and time; instead, the proposed scheme would allow performing a faster and cheaper re-certification that involves only the affected aspects of the system.
 
-\section{Process Walkthrough}
-This section will illustrate a complete walkthrough of the proposed certification scheme over a system based on OpenSSL that has to go through the OpenSSL cryptolibrary update.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{First Certification}
+This section illustrates how a simple web service could start its lifecycle with a strong certification process capable of delivering a long-lasting certificate. More specifically, the approach taken follows the main steps of the Common Criteria process, but, for simplicity, we ignore the selection and definition of a protection profile which would be required in a real CC scenario. The phases considered in this demonstration are the identification and description of the ToE and the simulation of what the certification report could include after the manual review and testing phases.
 
-\subsection{Trigger Phase}
-The bug that exposed the first vulnerability ([CVE-2014-0224]) consisted of a bad implementation of the DTLS handshake protocol [], which allowed bad actors to defeat any encryption algorithm used effortlessly; hence, the influenced property is the ability to manage cryptographic keys securely.
+\subsection{Target of Evaluation}
+The ToE considered for this demonstration is a web service based on OpenSSL, a robust, commercial-grade, full-featured open-source toolkit for the Transport Layer Security (TLS) protocol formerly known as the Secure Sockets Layer (SSL) protocol. The protocol implementation is based on a full-strength general-purpose cryptographic library, which can also be used stand-alone.
+OpenSSL is descended from the SSLeay library developed by Eric A. Young and Tim J. Hudson []. The OpenSSL crypto library (\textit{libcrypto}) implements various cryptographic algorithms used in various Internet standards. The services provided by this library are used by the OpenSSL implementations of TLS and CMS (Content Management System, used for encryption and decryption of files with specific formats []), and they have also been used to implement many other third-party products and protocols.
+The functionality includes symmetric encryption, public key cryptography, key agreement, certificate handling, cryptographic hash functions, cryptographic pseudo-random number generators, Message Authentication Codes (MACs), Key Derivation Functions (KDFs), and various utilities. To keep the examples simple, the implementations shown in the next sections refer only to the OpenSSL component of the certification target.
 
-The bug allowed entities to accept the ChangeCipherSpec message at timings different from the intended ones; hence, the attribute of the property that will be considered is the timing of the CCS message, which must satisfy two conditions to be accepted: i) there are no fragments from the handshake uncompleted (e.g. certificate validation) and ii) the next message received is Finished.
+\definecolor{Gray}{gray}{0.88}
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{||l||} 
+     \hline
+     \rowcolor{Gray}
+     \textbf{Requirement} \\ [0.5ex] 
+     \hline\hline
+     Cryptographic Key Generation \\ 
+     \hline
+     Cryptographic Key Destruction \\
+     \hline
+     Cryptographic Operation - Encryption/Decryption \\
+     \hline
+     Cryptographic Operation - Hashing \\
+     \hline
+     Cryptographic Operation - Keyed-Hash Message Authentication\\
+     \hline
+     Random Bit Generation\\
+     \hline
+     Storage of Sensitive Data\\
+     \hline
+     SSH Protocol\\
+     \hline
+     TLS Protocol\\
+     \hline
+     Access Controls for Protecting User Data\\
+     \hline
+     Authentication Failure Handling\\
+     \hline
+     Multiple Authentication Mechanisms\\
+     \hline
+     X.509 Certificate Validation\\
+     \hline
+     X.509 Certificate Authentication\\
+     \hline
+     Management of security functions behavior\\
+     \hline
+     Specification of Management Functions\\
+     \hline
+     Access controls\\
+     \hline
+     Address Space Layout Randomization\\
+     \hline
+     Stack Buffer Overflow Protection\\
+     \hline
+    Software Restriction Policies\\
+     \hline
+     Boot Integrity\\
+     \hline
+     Trusted Update\\
+     \hline
+     Trusted channel communication\\
+     \hline
+     Trusted Path\\
+     \hline
+     Cryptographic Operation - Signing \\ [1ex] 
+     \hline
+    \end{tabular}
+    \caption{Security Requirements for the Proposed Example}
+    \label{tab:SR}
+\end{table}
 
-The bug that exposed the second vulnerability ([CVE-2016-7798]) consisted of a bad implementation of the Ruby Openssl gem when using the AES algorithm in Galois/Counter Mode (GCM) [], which allowed each initialization vector to be used multiple times; this resulted in weak encryption of data. The issue was caused by the initialization vector being set before the key when it should have been set after it. The attributes considered in this process are the encryption algorithm (AES-GCM), the satisfaction of the requirement of having a different initialization vector every time and the correlated certificate signing algorithm, which is also affected by this issue.
 
-It is important to note that both the vulnerabilities described above affect the system's confidentiality; hence, confidentiality will be the only macro-property considered.
+\vspace{.75em}
+\noindent{\textbf{Security Requirements}}
 
-After the system receives the update, the trigger component analyses the changes, comparing the old certificates with the updated properties and attributes and extracting the following properties and attributes:
+\noindent{}This paragraph identifies the security properties for the ToE, which are listed in Table \ref{tab:SR}; additionally, each property is associated with the relative attributes.
+
+\subsection{Resuilts?}
+da qui mostrare i risultati?
+
+
+
+
+
+
+
+
+
+\section{Ephemeral Certification}
+This section illustrates a complete walkthrough of the proposed certification scheme over a web service based on OpenSSL that underwent the OpenSSL cryptolibrary update; this includes all the phases described in Chapter \ref{cap3} from the update installation to the release of the certificate. Furhermore, we note that all tests were executed on a virtual machine running Linux Ubuntu version 22.04.1 using a client-server setup that simulates how a web service would function.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Vulnerabilities Assessment and Certification Walkthrough}
+\subsubsection{CVE-2014-022 - Trigger phase}
+The \texttt{CVE-2014-0224} vulnerability allowed man-in-the-middle attackers [] to use a zero-length master key in certain OpenSSL-to-OpenSSL communications and consequently hijack sessions or obtain sensitive information via a crafted TLS handshake, also known as ``CCS Injection" vulnerability []; such a weakness represented a high risk for the users' privacy and the systems confidentiality macro-property.
+The bug that exposed the \texttt{CVE-2014-0224} vulnerability consisted of a bad implementation of the DTLS handshake protocol [], which allowed bad actors to defeat any encryption algorithm used effortlesly; hence, the influenced property is the ability to manage cryptographic keys securely. More specifically, the server entity was allowed to accept the ChangeCipherSpec (CCS) message at timings different from the intended one; hence, the attribute of the property that will be considered is the timing of the CCS message, which must satisfy two conditions to be accepted: i) there are no fragments from the handshake uncompleted (e.g. certificate validation) and ii) the next message received is Finished; the correct sequence of the messages is shown in Figure \ref{fig:handshake}.
+
+\begin{figure}[ht]
+    \centering
+    \fbox{\includegraphics[scale=0.3]{images/ccs_handshake.png}}
+    \caption{TLS handshake protocol messages sequence}
+    \label{fig:handshake}
+\end{figure}
+
+
+After the system receives the update, the trigger component analyses the changes, comparing the old certificates with the updated properties and attributes and extracting the following ones:
 \begin{itemize}
-    \item Ability to execute cryptographic mechanisms of appropriate strength and performance
+    \item Ability to perform authenticated encryption algorithms (\(p_1\));
     \begin{itemize}
-        \item AES-GCM conditions
-        \item AES-GCM key length
+        \item DTLS handshake conditions (\(a_1\));
     \end{itemize}
-    \item Ability to perform authenticated encryption algorithms
-    \begin{itemize}
-        \item DTLS handshake conditions
-    \end{itemize}
-    \item Ability to verify digital signatures
-    \begin{itemize}
-        \item Signature algorithm and key length
-    \end{itemize}
-
 \end{itemize}
 
-After listing the impacted properties and attributes and making them available through the Changes function, the trigger signals a manual operator that the process requires attention.
+Following the formalization of the \textit{Changes} function introduced in Section \ref{trigger}, the output of such function for this vulnerability is: \[ \{ (p_1, \{a_1\})\}\]
 
-\subsection{Manual Revision Phase}
+After listing the impacted properties and attributes and making them available, the trigger signals a manual operator that the process requires attention.
+
+\subsubsection{CVE-2014-022 - Manual revision phase}
 An expert manual operator accesses the properties and attributes through the Changes function and deals with three main tasks:
 \begin{itemize}
-    \item According to technological standards, the operator has to assign to each attribute a list of values; in this example, they are:
+    \item According to technological standards, the operator assigns a list of values to each attribute; in this example, they result formalized as follows:
     \begin{itemize}
-        \item {[1]} (satisfied or not) for the AES-GCM conditions
-        \item {[128, 192, 256]} for the key length of the AES-GCM algorithm
-        \item {[1]} (satisfied or not) for the DTLS handshake conditions
-        \item {[\texttt{sha-1WithRSAEncryption, sha-224WithRSAEncryption, sha-256WithRSAEncryption, sha-384WithRSAEncryption, sha-512WithRSAEncryption}]} for the signature algorithm and key length
+        \item \(\langle a_1, [1]\rangle\);
     \end{itemize}
     
-    \item According to her assumed knowledge, he assigns a range of scores that directly map to the values of each attribute:
+    \item According to her assumed knowledge, the operator assigns a range of scores that directly map to the values of each attribute:
     \begin{itemize}
-        \item {[20]} for the AES-GCM conditions
-        \item {[5, 10, 20]s} for the key length of the AES-GCM algorithm
-        \item {[20]} for the DTLS handshake conditions
-        \item {[5, 10, 20, 50, 70]} for the signature algorithm and key length
+        \item {[20]} for \(a_1\);
     \end{itemize}
-    
-    \item According to her assumed knowledge, he assigns a score threshold to the impacted macro-properties; in this case, to the confidentiality macro-property, he assigns a threshold of 80 and a weight of 1 (the final weighted sum is ignored for this example).
 \end{itemize}
 
-\subsection{Score Computation and Testing}
-At this point, the system must compute the minimum value needed by each attribute to reach the threshold with the minimum possible effort. In this case, since the threshold is 80, each attribute needs a score of 20 and will be tested for the corresponding value:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{CVE-2016-779 - Trigger phase}
+The \texttt{CVE-2016-7798} vulnerability affected the OpenSSL Ruby gem, which used the same initialization vector for multiple encryptions in a specific configuration; this allowed attackers to decipher encrypted messages easily []; this weakness, as the previous one, represented a high risk for the users' privacy and the systems confidentiality macro-property.
+The bug that exposed the second vulnerability (CVE-2016-7798) consisted of a bad implementation of the Ruby Openssl gem when using the AES algorithm in Galois/Counter Mode (GCM) [], which allowed each initialization vector to be used multiple times; this resulted in weak encryption of data. The issue was caused by the initialization vector being set before the key when it should have been set after it. The attributes considered in this process are the encryption algorithm (AES-GCM), the satisfaction of the requirement of having a different initialization vector every time and the correlated certificate signing algorithm, which is also affected by this issue.
+
+
+
+After the system receives the update, the trigger component analyses the changes, comparing the old certificates with the updated properties and attributes and extracting the following properties and attributes:
+
 \begin{itemize}
-    \item 1 for the AES-GCM conditions
-    \item 256 for the key length of the AES-GCM algorithm
-    \item 1 for the DTLS handshake conditions
-    \item \texttt{sha-256WithRSAEncryption} for the signature algorithm and key length
+    \item Ability to verify digital signatures (\(p_2\));
+    \begin{itemize}
+        \item Signature algorithm and key length. (\(a_2\))
+    \end{itemize}
+    \item Ability to execute cryptographic mechanisms of appropriate strength and performance (\(p_3\));
+    \begin{itemize}
+        \item AES-GCM conditions (\(a_3\));
+        \item AES-GCM key length (\(a_4\)).
+    \end{itemize}
 \end{itemize}
 
-If the system holds such requirements, then the certificate can be released.
+Following the formalization of the \textit{Changes} function introduced in Section \ref{trigger}, the output of such function for this vulnerability is: \[ \{(p_2, \{a_2\}), (p_3, \{a_3, a_4\}) \}\]
 
-All tests were executed on a virtual machine running Linux Ubuntu version 22.04.1 using a client-server setup.
-For CVE-2014-0224 the server was tested with OpenSSL version 0.9.8y, known for being vulnerable to the CCS injection attack, and version 3.0.2, which implements the security patch to the vulnerability. Both server instances were initialized with the same commands:
+After listing the impacted properties and attributes and making them available through the \textit{Changes} function, the trigger signals a manual operator that the process requires attention.
 
-First, it is required to generate a new key and a certificate on the server that will be used to establish a secure SSL/TLS connection with the following command:
-"openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes"; the command req is used to create a self-signed test certificate with the argument x509, and the other arguments are: i) \textbf{newkey rsa:4096} generates a new private RSA key of size 4096 bits, ii) \textbf{keyout} copies the generated key into a file named key.pem, iii) \textbf{out} copies the generated certificate into a file named cert.pem, iv) \textbf{days} specifies the validity duration of the certificate and v) \textbf{nodes} avoids encrypting the generated private key.
+\subsubsection{CVE-2016-779 - Manual revision phase}
+An expert manual operator accesses the properties and attributes through the Changes function and deals with three main tasks:
+\begin{itemize}
+    \item According to technological standards, the operator has to assign to each attribute a list of values; for this vulnerability, they result formalized as follows:
+    \begin{itemize}
+        \item \(\langle a_2, [\texttt{sha-1WithRSAEncryption, sha-224WithRSAEncryption,}\)
+        
+        \(\texttt{sha-256WithRSAEncryption, sha-384WithRSAEncryption,} \)
+        
+        \(\texttt{sha-512WithRSAEncryption}]\rangle\)
+        \item \(\langle a_3, [1] \rangle\);
+        \item \(\langle a_4, [128, 192, 256] \rangle\).
+    \end{itemize}
+    
+    \item According to her assumed knowledge, the operator assigns a range of scores that directly map to the values of each attribute:
+    \begin{itemize}
+        \item {[5, 10, 20, 50, 70]} for \(a_2\).
+        \item {[20]} for \(a_3\);
+        \item {[5, 10, 20]} for \(a_4\).
+    \end{itemize}
+    
+\end{itemize}
+
+
+\subsubsection{Macro-properties thresholds definition}
+The operator needs access to all the micro-properties and attributes that will be evaluated in order to define a threshold for each macro-property; we note that all the listed micro-properties fall into the \textit{Consistency} macro-property. Then, let us suppose that the operator assigns a threshold of 80 and a weight of 1 (1 means that the final weighted sum is ignored, the weight is meant to allow additional control over the final results, which is not needed for this example) according to her assumed knowledge. At this point, the system must compute the minimum value needed by each attribute to reach the threshold with the minimum possible effort. In this case, since the threshold is 80 and the attributes are 4, each attribute needs a score of 20 and will be tested for the corresponding value; the micro-properties result formalized as follows:
+\begin{itemize}
+    \item \(\langle p_1, \{ (a_1, 1 ) \} \rangle\);
+    \item \(\langle p_2, \{(a_2, \texttt{sha-256WithRSAEncryption})\} \rangle\);
+    \item \(\langle p_3, \{(a_3, 1), (a_4, 256)\} \rangle\).
+\end{itemize}
+
+Finally, the Confidentiality macro-property \(P_1\) results formalized as follows: \[P_1 = \langle Confidentiality, \{ (p_1, 20), (p_2, 20), (p_3, 40) \}, 80 \rangle\].
+
+In case the system results holding such requirements, then the certificate can be released.
+
+
+\subsubsection{CVE-2014-022 - Testing phase}
+The testing phase for \texttt{CVE-2014-0224} is composed of a single test, which, following the test formalization of Section \ref{evmodel}, results in: \(t1 = \langle p_1, (a_1, 1, c_1) \rangle\), where \(c_1\) represents the code and commands used for this test, detailed below. The server was tested with OpenSSL version 0.9.8y, known for being vulnerable to the CCS injection attack, and version 3.0.2, which implements the security patch to the vulnerability. Both server instances were initialized with the same commands: First, it is required to generate a new key and a certificate on the server that will be used to establish a secure SSL/TLS connection with the following command:
+``openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes"; the command req is used to create a self-signed test certificate with the argument x509, and the other arguments are: i) \textbf{newkey rsa:4096} generates a new private RSA key of size 4096 bits, ii) \textbf{keyout} copies the generated key into a file named key.pem, iii) \textbf{out} copies the generated certificate into a file named cert.pem, iv) \textbf{days} specifies the validity duration of the certificate and v) \textbf{nodes} avoids encrypting the generated private key.
 Next, the server can be started using the following command:
-"\texttt{openssl s\_server -key key.pem -cert cert.pem -accept 44330 -www}"; the command \textbf{s\_server} implements a generic SSL/TLS server which accepts connections from remote clients speaking SSL/TLS, and the arguments are: i) \textbf{key} specifies the private key to use, ii) \textbf{cert} specifies the certificate file to use, iii) \textbf{accept} specifies the port to listen on for connections, and iv) \textbf{www} sets the server to send a status message back to the client when it connects.
+``\texttt{openssl s\_server -key key.pem -cert cert.pem -accept 44330 -www}"; the command \textbf{s\_server} implements a generic SSL/TLS server which accepts connections from remote clients speaking SSL/TLS, and the arguments are: i) \textbf{key} specifies the private key to use, ii) \textbf{cert} specifies the certificate file to use, iii) \textbf{accept} specifies the port to listen on for connections, and iv) \textbf{www} sets the server to send a status message back to the client when it connects.
 
-On the client side, executing a script designed to check if the server is vulnerable to the CCS injection exploit is sufficient; such a script is publicly available on [nmap.org website] and uses the open-source tool Nmap []. The script works by sending a '\textit{ChangeCipherSpec}' message out of order and checking whether the server returns a '\textit{UNEXPECTED\_MESSAGE}' alert record or not. Since a non-patched server would simply accept this message, the CCS packet is sent twice in order to force an alert from the server. The server is vulnerable if the alert type is different from '\textit{UNEXPECTED\_MESSAGE}'; the script is shown in appendix B []. The output provided by the script is the following for the vulnerable server test:  
+On the client side, executing a script designed to check if the server is vulnerable to the CCS injection exploit is sufficient; such a script is publicly available on [nmap.org website] and uses the open-source tool Nmap []. The script works by sending a `\textit{ChangeCipherSpec}' message out of order and checking whether the server returns a `\textit{UNEXPECTED\_MESSAGE}' alert record or not. Since a non-patched server would simply accept this message, the CCS packet is sent twice in order to force an alert from the server. The server is vulnerable if the alert type is different from `\textit{UNEXPECTED\_MESSAGE}'; the script is shown in appendix B []. The output provided by the script is the following for the vulnerable server test:  
 
 \begin{verbatim}
 Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-17 19:23 CEST
@@ -111,7 +228,7 @@ PORT      STATE SERVICE
 |      which allows man-in-the-middle attackers to trigger use of a zero
 |      length master key in certain OpenSSL-to-OpenSSL communications, and
 |      consequently hijack sessions or obtain sensitive information, via
-|      a crafted TLS handshake, aka the "CCS Injection" vulnerability.
+|      a crafted TLS handshake, aka the ``CCS Injection" vulnerability.
 |           
 |     References:
 |       http://www.cvedetails.com/cve/2014-0224
@@ -136,67 +253,10 @@ Nmap done: 1 IP address (1 host up) scanned in 0.17 seconds
 The test results show that the server running OpenSSL version 3.0.2 is no longer vulnerable to the CCS injection attack, while, with version 0.9.8y, the script highlights the presence of the vulnerability.
 
 
-The test for CVE-2016-7798 was executed by replicating the bug using OpenSSL's Ruby gem; moreover, the execution was done using Ruby version 2.0.0p648, known for being affected by the bug, and Ruby version 3.1.0p0, which implements the security patch to the vulnerability. The scripts used for testing are shown in appendix \ref{IV}.The server does mainly three operations: i) waits for a message from the client, ii) encrypts the received message with the AES-256-GCM algorithm, always using the same key and iii) sends a hashed version of the encrypted message back to the client. Moreover, the server encrypts the messages setting a random initialization vector first and then the key, as suggested by [], to reproduce the bug. On the other hand, the client sends multiple times the same message to the server and counts the different ciphered texts received; the ciphered texts are extracted from the hashed texts and inserted into a set, which automatically filters out all the identical elements; the number of different ciphered texts is then the size of such set. Theoretically, the number of different ciphered texts should equal the number of sent messages.
+\subsubsection{CVE-2016-779 - Testing phase}
+The testing phase for \texttt{CVE-2016-7798} is composed of two tests, which, following the test formalization of Section \ref{evmodel}, result in: \(t_2 = \langle p_2, (a_2, \texttt{sha-256WithRSAEncryption}, c_2) \rangle\) and \(t_3 = \langle p_3, \{(a_3, 1, c_3), (a_4, 256, c_4)\}  \rangle\), where \(c_2, c_3\) and \(c_4\) represent the code used for this test, detailed below.
 
-The output of the server is the same in both versions:
-\begin{verbatim}
->> Listening on port 44330
->> Received, encrypted and sent 1000000 messages
-\end{verbatim}
-
-The output resulting from the client connected to the vulnerable server is the following:
-\begin{verbatim}
->> Sending 1000000 messages to the server...
->> All the messages encrypted by the server are equal
-\end{verbatim}
-
-and the output resulting from the client connected to the patched version is the following:
-\begin{verbatim}
->> Sending 1000000 messages to the server...
->> The server sent 1000000 different ciphered texts
-\end{verbatim}
-
-The test proves that the vulerability is not present anymore in the patched version since the number of chiphered texts equal the number of sent messages.
-
-
-The test of the algorithm AES-GCM with a key length of 256 bits was executed using a client-server setup with the Ruby language; the scripts used are shown in the appendix \ref{aes}. This test aimed to ensure the system's (server) capability to decrypt messages using the AES-256-GCM algorithm. Moreover, the test steps are as follows: i) the client encrypts a message using the AES-256-GCM algorithm and sends it to the server, ii) the server decrypts the message and sends it back to the client as plaintext and iii) the client compares the received plaintext with the original message; if all the messages are successfully decrypted the test is passed. The output of the test on the server-side is the following:
-\begin{scriptsize}
-\begin{verbatim}
-Listening on port 44330
-
-Received:  => 94c5710fdb955d3c785ce8b7dd13c27fdc1413478698bcb00b5165ce0d046aa46b042ca5d411d557
-Decrypted: => Test message
-
-Received:  => 2168638686b8306cfab0f91c78b539c5c6b2b691ce7653d8f9e88a475a32775702f2e383876c98b9
-Decrypted: => Test message
-
-Received:  => 94d7bcaae857db4f7cc6ced44e13002359f3945dbc2ebd8ecb60ab31eedb045855e96837355d4732
-Decrypted: => Test message
-
-Received:  => 76d28244ff06b9e4b5e6a7acffae823e8e7a3627c605ff19e19ab694a74cf6eae4cd339e5243ecef
-Decrypted: => Test message
-
-Received:  => a97de6ed0ae94ebaf7b50af087c27da8e5d71207266c00881bd5e399dbc154a422b02cf68728499e
-Decrypted: => Test message
-\end{verbatim}
-\end{scriptsize}
-
-and the output of the test on the client-side is the following:
-\begin{verbatim}
-The server decrypted the message correctly: { Test message }
-The server decrypted the message correctly: { Test message }
-The server decrypted the message correctly: { Test message }
-The server decrypted the message correctly: { Test message }
-The server decrypted the message correctly: { Test message }
-The server decrypted all messages successfully!
-\end{verbatim}
-
-The output confirms the server's capability of decrypting messages with the AES-256-GCM algorithm.
-
-
-
-
-The test of the sha-256WithRSAEncryption signature algorithm was also executed using a client-server setup with the Ruby language; the scripts used are shown in the appendix \ref{sig}. This test aimed to verify the integrity of the system's (server) certificate when generated using the sha-256WithRSAEncryption algorithm.The test's steps are as follows: i) the client connects to the server and sends an \textit{HELLO} message, ii) the server accepts the connection and replies to the \textit{HELLO} message with its certificate, iii) the client receives the server's certificate and extracts the server's public key from it, iv) the client uses the server's public key to encrypt a document and sends the result to the server, v) the server receives the encrypted document and decrypts it with its private key, vi) the server uses its private key to sign the decrypted document and sends the result to the client and vii) the client receives the signed document and verifies the authenticity of the signature usign the server's public key; if such verification succeeds the test is passed.
+The test for the \texttt{sha-256WithRSAEncryption} signature algorithm (\(t_2\)) was executed using a client-server setup with the Ruby language; the scripts used are shown in the appendix \ref{sig}. This test aimed to verify the integrity of the system's (server) certificate when generated using the \texttt{sha-256WithRSAEncryption} algorithm. The test's steps are as follows: i) the client connects to the server and sends an \textit{`HELLO'} message, ii) the server accepts the connection and replies to the \textit{`HELLO'} message with its certificate, iii) the client receives the server's certificate and extracts the server's public key from it, iv) the client uses the server's public key to encrypt a document and sends the result to the server, v) the server receives the encrypted document and decrypts it with its private key, vi) the server uses its private key to sign the decrypted document and sends the result to the client and vii) the client receives the signed document and verifies the authenticity of the signature usign the server's public key; if such verification succeeds the test is passed.
 
 The output of the test on the server-side is the following:
 \begin{verbatim}
@@ -288,7 +348,78 @@ This is an example document
 >> Connection terminated
 \end{verbatim}
 
-The output confirms the integrity of the server's certificate generated with the sha-256WithRSAEncryption signature algorithm.
+The output confirms the integrity of the server's certificate generated with the \texttt{sha-256WithRSAEncryption} signature algorithm.
+
+The test for the \texttt{AES-256-GCM} initialization vector (\(t_3\)) was executed by replicating the bug using the OpenSSL's Ruby gem; moreover, the execution was done using Ruby version 2.0.0p648, known for being affected by the bug, and Ruby version 3.1.0p0, which implements the security patch to the vulnerability. The scripts used for testing are shown in appendix \ref{IV}. The server does mainly three operations: i) waits for a message from the client, ii) encrypts the received message with the \texttt{AES-256-GCM} algorithm, always using the same key and iii) sends a hashed version of the encrypted message back to the client. Moreover, the server encrypts the messages setting a random initialization vector first and then the key, as suggested by [cve], to reproduce the bug. On the other hand, the client sends multiple times the same message to the server and counts the different ciphered texts received; the ciphered texts are extracted from the hashed texts and inserted into a set, which automatically filters out all the identical elements; the number of different ciphered texts is then the size of such set. Theoretically, the number of different ciphered texts should equal the number of sent messages.
+
+The output of the server is the same in both versions:
+\begin{verbatim}
+>> Listening on port 44330
+>> Received, encrypted and sent 1000000 messages
+\end{verbatim}
+
+The output resulting from the client connected to the vulnerable server is the following:
+\begin{verbatim}
+>> Sending 1000000 messages to the server...
+>> All the messages encrypted by the server are equal
+\end{verbatim}
+
+and the output resulting from the client connected to the patched version is the following:
+\begin{verbatim}
+>> Sending 1000000 messages to the server...
+>> The server sent 1000000 different ciphered texts
+\end{verbatim}
+
+The test proves that the vulerability is not present anymore in the patched version since the number of chiphered texts equal the number of sent messages.
 
 
+The test of the encryption algorithm \texttt{AES-GCM} with a key length of 256 bits was alse executed using a client-server setup with the Ruby language; the scripts used are shown in the appendix \ref{aes}. This test aimed to ensure the system's (server) capability to decrypt messages using the \texttt{AES-256-GCM} algorithm. Moreover, the test steps are as follows: i) the client encrypts a message using the \texttt{AES-256-GCM} algorithm and sends it to the server, ii) the server decrypts the message and sends it back to the client as plaintext and iii) the client compares the received clear text with the original message; if all the messages are successfully decrypted the test is passed. The output of the test on the server-side is the following:
+\begin{scriptsize}
+\begin{verbatim}
+Listening on port 44330
+
+Received:  => 94c5710fdb955d3c785ce8b7dd13c27fdc1413478698bcb00b5165ce0d046aa46b042ca5d411d557
+Decrypted: => Test message
+
+Received:  => 2168638686b8306cfab0f91c78b539c5c6b2b691ce7653d8f9e88a475a32775702f2e383876c98b9
+Decrypted: => Test message
+
+Received:  => 94d7bcaae857db4f7cc6ced44e13002359f3945dbc2ebd8ecb60ab31eedb045855e96837355d4732
+Decrypted: => Test message
+
+Received:  => 76d28244ff06b9e4b5e6a7acffae823e8e7a3627c605ff19e19ab694a74cf6eae4cd339e5243ecef
+Decrypted: => Test message
+
+Received:  => a97de6ed0ae94ebaf7b50af087c27da8e5d71207266c00881bd5e399dbc154a422b02cf68728499e
+Decrypted: => Test message
+\end{verbatim}
+\end{scriptsize}
+
+and the output of the test on the client-side is the following:
+\begin{verbatim}
+The server decrypted the message correctly: { Test message }
+The server decrypted the message correctly: { Test message }
+The server decrypted the message correctly: { Test message }
+The server decrypted the message correctly: { Test message }
+The server decrypted the message correctly: { Test message }
+The server decrypted all messages successfully!
+\end{verbatim}
+
+The output confirms the server's capability of decrypting messages with the \texttt{AES-256-GCM} algorithm.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
+The results from the tests over the micro-properties detailed above are positive; following the methodology introduced in Chapter \ref{cap3}, it is now possible to formally express the evidence collection model \(\mathcal{E}\), the certification model \(\mathcal{M}\) and the final certificate \(\mathcal{C}\). The evidence collection model E is obtainable from the tests and properties introduced in this section, and it is: 
+\[ \mathcal{E} = \{ \{t_1\}_{p_1}, \{t_2\}_{p_2}, \{t_3\}_{p_3} \}_{Confidentiality}\]
+The Ephemeral function allows computing the certification model in the following way:
+\[\mathcal{M} = \langle P_1, \mathcal{E} \rangle\]
+
+Finally, the new certificate is returned from the \textit{Execute} function, expressed as follows: 
+
+\[Execute(\mathcal{M}) \rightarrow \mathcal{C} \cup \{(p_1, e_1), (p_2, e_2), (p_3, e_3)\}\]
+
+where \(e_j\) is a representation of the positive result obtained from the test \(t_j\); the obtained certificate will now complement the set of certificates previously obtained (\(\mathcal{C}\)).
