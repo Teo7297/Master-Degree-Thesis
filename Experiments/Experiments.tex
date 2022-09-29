@@ -8,11 +8,12 @@ With standard approaches, the presence of such vulnerabilities in a core compone
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{First Certification}
+\label{first}
 This section illustrates how a simple web service could start its lifecycle with a strong certification process capable of delivering a long-lasting certificate. More specifically, the approach taken follows the main steps of the Common Criteria process, but, for simplicity, we ignore the selection and definition of a protection profile which would be required in a real CC scenario. The phases considered in this demonstration are the identification and description of the ToE and the simulation of what the certification report could include after the manual review and testing phases.
 
 \subsection{Target of Evaluation}
 The ToE considered for this demonstration is a web service based on OpenSSL, a robust, commercial-grade, full-featured open-source toolkit for the Transport Layer Security (TLS) protocol formerly known as the Secure Sockets Layer (SSL) protocol. The protocol implementation is based on a full-strength general-purpose cryptographic library, which can also be used stand-alone.
-OpenSSL is descended from the SSLeay library developed by Eric A. Young and Tim J. Hudson []. The OpenSSL crypto library (\textit{libcrypto}) implements various cryptographic algorithms used in various Internet standards. The services provided by this library are used by the OpenSSL implementations of TLS and CMS (Content Management System, used for encryption and decryption of files with specific formats []), and they have also been used to implement many other third-party products and protocols.
+OpenSSL is descended from the SSLeay library developed by Eric A. Young and Tim J. Hudson [hudson1997ssleay]. The OpenSSL crypto library (\textit{libcrypto}) implements various cryptographic algorithms used in various Internet standards. The services provided by this library are used by the OpenSSL implementations of TLS and CMS (Content Management System, used for encryption and decryption of files with specific formats \cite{mckeever2003understanding}), and they have also been used to implement many other third-party products and protocols.
 The functionality includes symmetric encryption, public key cryptography, key agreement, certificate handling, cryptographic hash functions, cryptographic pseudo-random number generators, Message Authentication Codes (MACs), Key Derivation Functions (KDFs), and various utilities. To keep the examples simple, the implementations shown in the next sections refer only to the OpenSSL component of the certification target.
 
 \definecolor{Gray}{gray}{0.88}
@@ -30,6 +31,8 @@ The functionality includes symmetric encryption, public key cryptography, key ag
      Cryptographic Operation - Encryption/Decryption \\
      \hline
      Cryptographic Operation - Hashing \\
+     \hline
+     Cryptographic Operation - Signing \\
      \hline
      Cryptographic Operation - Keyed-Hash Message Authentication\\
      \hline
@@ -69,9 +72,7 @@ The functionality includes symmetric encryption, public key cryptography, key ag
      \hline
      Trusted channel communication\\
      \hline
-     Trusted Path\\
-     \hline
-     Cryptographic Operation - Signing \\ [1ex] 
+     Trusted Path \\ [0.5ex]
      \hline
     \end{tabular}
     \caption{Security Requirements for the Proposed Example}
@@ -79,44 +80,116 @@ The functionality includes symmetric encryption, public key cryptography, key ag
 \end{table}
 
 
-\vspace{.75em}
-\noindent{\textbf{Security Requirements}}
 
-\noindent{}This paragraph identifies the security properties for the ToE, which are listed in Table \ref{tab:SR}; additionally, each property is associated with the relative attributes.
+\subsection{Security Requirements}
+This paragraph identifies the security properties for the ToE, which are listed in Table \ref{tab:SR}; additionally, each property is associated with the relative attributes; for simplicity only the core attributes of the most important properties are listed below:
 
-\subsection{Resuilts?}
-da qui mostrare i risultati?
+\begin{description}
+    \item[Cryptographic Key Generation] The service shall generate asymmetric cryptographic keys in accordance with a specified cryptographic key generation algorithm (\(p_1\));
+    \begin{itemize}
+        \item RSA schemes using cryptographic key sizes of 2048-bit or greater (\(a_1\)).
+    \end{itemize}
+    \item[Cryptographic Key Destruction] The service shall destroy cryptographic keys and key material in accordance with a specified cryptographic key destruction method (\(p_2\));
+    \begin{itemize}
+        \item For volatile memory, the destruction shall be executed by a single overwrite consisting of zeroes (\(a_2\));
+        \item For non-volatile memory that consists of the invocation of an interface provided by the underlying platform that logically addresses the storage location of the key and performs specified number (default of 3) of overwrites consisting of a pseudo-random pattern (\(a_3\));
+    \end{itemize}
+    \item[Cryptographic Operation - Encryption/Decryption] The service shall perform encryption and decryption services for data in accordance with a specified cryptographic algorithm (\(p_3\));
+    \begin{itemize}
+        \item AES-128-CBC (\(a_4\))
+        \item AES-192-CBC (\(a_5\))
+        \item AES-256-CBC (\(a_6\))
+        \item AES-128-GCM (\(a_7\))
+        \item AES-192-GCM (\(a_8\))
+        \item AES-256-GCM (\(a_9\))
+    \end{itemize}
+    \item[Cryptographic Operation - Hashing] The service shall perform [cryptographic hashing services] in accordance with a specified cryptographic algorithm (\(p_4\))
+    \begin{itemize}
+        \item SHA-256 (\(a_{10}\))
+        \item SHA-384 (\(a_{11}\))
+        \item SHA-512 (\(a_{12}\))
+    \end{itemize}
+    and message digest sizes
+    \begin{itemize}
+        \item 256 bits (\(a_{13}\))
+        \item 384 bits (\(a_{14}\))
+        \item 512 bits (\(a_{15}\))
+    \end{itemize}
+    \item[Cryptographic Operation - Signing] The service shall perform [cryptographic signature services (generation and verification)] in accordance with a specified cryptographic algorithm (\(p_5\))
+    \begin{itemize}
+        \item RSA schemes using cryptographic key sizes of 2048-bit or greater (\(a_{16}\))
+    \end{itemize}
+    
+    \item[Random Bit Generation] The service shall perform all deterministic random bit generation (DRBG) services using a specific algorithm (\(p_6\)).
+    \item Random Bit Generation )
+    \begin{itemize}
+       \item CTR\_DRBG (AES) (\(a_{17}\))
+   \end{itemize}
+    
+    \item[TLS Protocol] The service shall implement TLS 1.2 supporting the following cipher suites (\(p_7\)).
+    \begin{itemize}
+        \item TLS\_DHE\_RSA\_WITH\_AES\_128\_CBC\_SHA256 (\(a_{18}\))
+        \item TLS\_DHE\_RSA\_WITH\_AES\_256\_CBC\_SHA256 (\(a_{19}\))
+        \item TLS\_DHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256 (\(a_{20}\))
+        \item TLS\_DHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384 (\(a_{21}\))
+        \item TLS\_ECDHE\_ECDSA\_WITH\_AES\_128\_CBC\_SHA256 (\(a_{22}\))
+        \item TLS\_ECDHE\_ECDSA\_WITH\_AES\_128\_GCM\_SHA256 (\(a_{23}\))
+        \item TLS\_ECDHE\_ECDSA\_WITH\_AES\_256\_GCM\_SHA384 (\(a_{24}\))
+        \item TLS\_ECDHE\_RSA\_WITH\_AES\_128\_CBC\_SHA256 (\(a_{25}\))
+        \item TLS\_ECDHE\_RSA\_WITH\_AES\_128\_GCM\_SHA256 (\(a_{26}\))
+        \item TLS\_ECDHE\_RSA\_WITH\_AES\_256\_GCM\_SHA384 (\(a_{27}\))
+    \end{itemize} 
+    and implementing the correct sequence of message for the connection handshake (\(a_{28}\)).
+    
+   \item[Cryptographic Operation - Signing] The service shall perform cryptographic signature services (generation and verification) in accordance with a specified cryptographic algorithm (\(p_8\))
+    \begin{itemize}
+        \item RSA schemes using cryptographic key sizes of 2048-bit or greater (\(a_{29}\))
+    \end{itemize}
+
+\end{description}
 
 
+\subsection{Evaluation Procedure and Certificate Release}
+\label{firstcert}
+Following the standard procedure of the Common Criteria, the next step is to identify the ToE configuration to evaluate the abovementioned properties and attributes. In this case, the tested configuration consists of a machine mounting an \texttt{AMD Ryzen 5 3600 6-Core} CPU running \texttt{Linux Ubuntu version 22.04.1} through a VMWare virtual machine. Finally, the tests can be executed to establish if the system effectively holds the identified properties and attributes. The actual testing process of this certification scheme is out of the scope of this thesis, and we assume the certification process's success leads to the certificate's release, but below, we show what the resulting certificate would look like if described using the formal models defined in Chapter \ref{cap3}. We defined the certificate as a set of pairs, each representing a micro-property and the set of evidence supporting it; more specifically, each piece of evidence aims at supporting an attribute of the micro-property. The certificate resulting from the CC process would be translated into the following formalization: 
 
+\[\{ (p_1, \{e_1\}),(p_2, \{e_2, e_3\}),(p_3, \{e_4, \dots, e_9\}),(p_4, \{e_{10}, \dots, e_{15}\}),(p_5, \{e_{16}\}), \]
+\[(p_6, \{e_{17}\}),(p_7, \{e_{18}, \dots, e_{28}\}),(p_8, \{e_{29}\}) \}\]
 
-
+The resulting certificate above can ultimately be interpreted by the trigger component of the proposed certification scheme and used to compare every change the system undergoes, eventually triggering the re-certification process. Such an event has a high chance of happening when dealing with highly dynamic systems similar to the one considered in this example; in the next section, we show how a situation involving a needed re-certification could be handled using the proposed Ephemeral Certification.
 
 
 
 
 \section{Ephemeral Certification}
-This section illustrates a complete walkthrough of the proposed certification scheme over a web service based on OpenSSL that underwent the OpenSSL cryptolibrary update; this includes all the phases described in Chapter \ref{cap3} from the update installation to the release of the certificate. Furhermore, we note that all tests were executed on a virtual machine running Linux Ubuntu version 22.04.1 using a client-server setup that simulates how a web service would function.
+This section illustrates a complete walkthrough of the proposed certification scheme over the web service introduced in the previous section. We note that the service is based on OpenSSL which underwent the OpenSSL cryptolibrary update. the following sections include all the phases described in Chapter \ref{cap3} from the analysis of the system's update, using the certificate obtained in Section \ref{firstcert}, to the release of a new certificate. Furhermore, we note that all tests were executed on the same machine configuration as in Section \ref{first} using a client-server setup that simulates how a web service would function. The diagram in figure \ref{fig:proc_prop} shows a simple illustration of the properties and attributes considered in the following paragraphs.
+
+\begin{figure}[ht]
+    \centering
+    \fbox{\includegraphics[scale=0.75]{images/Process_properties.png}}
+    \caption{Simple illustration of the properties and attributes considered for the proposed scheme's demonstration}
+    \label{fig:proc_prop}
+\end{figure}
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Vulnerabilities Assessment and Certification Walkthrough}
 \subsubsection{CVE-2014-022 - Trigger phase}
-The \texttt{CVE-2014-0224} vulnerability allowed man-in-the-middle attackers [] to use a zero-length master key in certain OpenSSL-to-OpenSSL communications and consequently hijack sessions or obtain sensitive information via a crafted TLS handshake, also known as ``CCS Injection" vulnerability []; such a weakness represented a high risk for the users' privacy and the systems confidentiality macro-property.
-The bug that exposed the \texttt{CVE-2014-0224} vulnerability consisted of a bad implementation of the DTLS handshake protocol [], which allowed bad actors to defeat any encryption algorithm used effortlesly; hence, the influenced property is the ability to manage cryptographic keys securely. More specifically, the server entity was allowed to accept the ChangeCipherSpec (CCS) message at timings different from the intended one; hence, the attribute of the property that will be considered is the timing of the CCS message, which must satisfy two conditions to be accepted: i) there are no fragments from the handshake uncompleted (e.g. certificate validation) and ii) the next message received is Finished; the correct sequence of the messages is shown in Figure \ref{fig:handshake}.
+The \texttt{CVE-2014-0224} vulnerability allowed man-in-the-middle attackers \cite{conti2016survey} to use a zero-length master key in certain OpenSSL-to-OpenSSL communications and consequently hijack sessions or obtain sensitive information via a crafted TLS handshake, also known as ``CCS Injection" vulnerability \cite{CCS}; such a weakness represented a high risk for the users' privacy and the systems confidentiality macro-property.
+The bug that exposed the \texttt{CVE-2014-0224} vulnerability consisted of a bad implementation of the DTLS handshake protocol \cite{DTLS}, which allowed bad actors to defeat any encryption algorithm used effortlesly; hence, the influenced property is the ability to manage cryptographic keys securely. More specifically, the server entity was allowed to accept the ChangeCipherSpec (CCS) message at timings different from the intended one; hence, the attribute of the property that will be considered is the timing of the CCS message, which must satisfy two conditions to be accepted: i) there are no fragments from the handshake uncompleted (e.g. certificate validation) and ii) the next message received is Finished; the correct sequence of the messages is shown in Figure \ref{fig:handshake}.
 
 \begin{figure}[ht]
     \centering
     \fbox{\includegraphics[scale=0.3]{images/ccs_handshake.png}}
-    \caption{TLS handshake protocol messages sequence}
+    \caption{TLS handshake protocol messages sequence diagram}
     \label{fig:handshake}
 \end{figure}
 
 
 After the system receives the update, the trigger component analyses the changes, comparing the old certificates with the updated properties and attributes and extracting the following ones:
 \begin{itemize}
-    \item Ability to perform authenticated encryption algorithms (\(p_1\));
+    \item TLS Protocol (\(p_1\));
     \begin{itemize}
         \item DTLS handshake conditions (\(a_1\));
     \end{itemize}
@@ -143,19 +216,19 @@ An expert manual operator accesses the properties and attributes through the Cha
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsubsection{CVE-2016-779 - Trigger phase}
-The \texttt{CVE-2016-7798} vulnerability affected the OpenSSL Ruby gem, which used the same initialization vector for multiple encryptions in a specific configuration; this allowed attackers to decipher encrypted messages easily []; this weakness, as the previous one, represented a high risk for the users' privacy and the systems confidentiality macro-property.
-The bug that exposed the second vulnerability (CVE-2016-7798) consisted of a bad implementation of the Ruby Openssl gem when using the AES algorithm in Galois/Counter Mode (GCM) [], which allowed each initialization vector to be used multiple times; this resulted in weak encryption of data. The issue was caused by the initialization vector being set before the key when it should have been set after it. The attributes considered in this process are the encryption algorithm (AES-GCM), the satisfaction of the requirement of having a different initialization vector every time and the correlated certificate signing algorithm, which is also affected by this issue.
+The \texttt{CVE-2016-7798} vulnerability affected the OpenSSL Ruby gem, which used the same initialization vector for multiple encryptions in a specific configuration; this allowed attackers to decipher encrypted messages easily \cite{vector}; this weakness, as the previous one, represented a high risk for the users' privacy and the systems confidentiality macro-property.
+The bug that exposed the second vulnerability (CVE-2016-7798) consisted of a bad implementation of the Ruby Openssl gem when using the AES algorithm in Galois/Counter Mode (GCM) \cite{gcm}, which allowed each initialization vector to be used multiple times; this resulted in weak encryption of data. The issue was caused by the initialization vector being set before the key when it should have been set after it. The attributes considered in this process are the encryption algorithm (AES-GCM), the satisfaction of the requirement of having a different initialization vector every time and the correlated certificate signing algorithm, which is also affected by this issue.
 
 
 
 After the system receives the update, the trigger component analyses the changes, comparing the old certificates with the updated properties and attributes and extracting the following properties and attributes:
 
 \begin{itemize}
-    \item Ability to verify digital signatures (\(p_2\));
+    \item Cryptographic Operation - Signing (\(p_2\));
     \begin{itemize}
         \item Signature algorithm and key length. (\(a_2\))
     \end{itemize}
-    \item Ability to execute cryptographic mechanisms of appropriate strength and performance (\(p_3\));
+    \item Cryptographic Operation - Encryption/Decryption (\(p_3\));
     \begin{itemize}
         \item AES-GCM conditions (\(a_3\));
         \item AES-GCM key length (\(a_4\)).
@@ -209,7 +282,7 @@ The testing phase for \texttt{CVE-2014-0224} is composed of a single test, which
 Next, the server can be started using the following command:
 ``\texttt{openssl s\_server -key key.pem -cert cert.pem -accept 44330 -www}"; the command \textbf{s\_server} implements a generic SSL/TLS server which accepts connections from remote clients speaking SSL/TLS, and the arguments are: i) \textbf{key} specifies the private key to use, ii) \textbf{cert} specifies the certificate file to use, iii) \textbf{accept} specifies the port to listen on for connections, and iv) \textbf{www} sets the server to send a status message back to the client when it connects.
 
-On the client side, executing a script designed to check if the server is vulnerable to the CCS injection exploit is sufficient; such a script is publicly available on [nmap.org website] and uses the open-source tool Nmap []. The script works by sending a `\textit{ChangeCipherSpec}' message out of order and checking whether the server returns a `\textit{UNEXPECTED\_MESSAGE}' alert record or not. Since a non-patched server would simply accept this message, the CCS packet is sent twice in order to force an alert from the server. The server is vulnerable if the alert type is different from `\textit{UNEXPECTED\_MESSAGE}'; the script is shown in appendix B []. The output provided by the script is the following for the vulnerable server test:  
+On the client side, executing a script designed to check if the server is vulnerable to the CCS injection exploit is sufficient; such a script is publicly available on [nmap.org website] and uses the open-source tool Nmap \cite{nmap}. The script works by sending a `\textit{ChangeCipherSpec}' message out of order and checking whether the server returns a `\textit{UNEXPECTED\_MESSAGE}' alert record or not. Since a non-patched server would simply accept this message, the CCS packet is sent twice in order to force an alert from the server. The server is vulnerable if the alert type is different from `\textit{UNEXPECTED\_MESSAGE}'; the script is shown in appendix \ref{ccs}. The output provided by the script is the following for the vulnerable server test:  
 
 \begin{verbatim}
 Starting Nmap 7.80 ( https://nmap.org ) at 2022-09-17 19:23 CEST

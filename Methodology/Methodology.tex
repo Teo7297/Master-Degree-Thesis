@@ -1,7 +1,7 @@
 
-Chapter \ref{cap2} shows that previous iterations of certification frameworks dealt with non-functional properties, attributes and mechanisms, assuming to know them when needed. This approach was valid in Cloud environments because all the required properties to be certified were manually pre-established and specified during a preparation phase before the certification execution. However, the process implied a rather large overhead when certifying a whole new system or issuing a recertification process after a small configuration change. In Cloud environments, a slow process is acceptable due to the small number of changes a Cloud system usually has to go through and the high accuracy requirements. On the other hand, IoT environments are highly dynamic, unique and continuously subject to small configuration and patch changes making this approach no longer feasible due to the high overhead each certification process would introduce and the resource cost, especially in the manual preparation phase.
+Chapter \ref{cap2} shows that previous iterations of certification frameworks dealt with non-functional properties, attributes and mechanisms (\ref{bblocks}), assuming to know them when needed. This approach was valid in Cloud environments because all the required properties to be certified were manually pre-established and specified during a preparation phase before the certification execution. However, the process implied a rather large overhead when certifying a whole new system or issuing a recertification process after a small configuration change. In Cloud environments, a slow process is acceptable due to the small number of changes a Cloud system usually has to go through and the high accuracy requirements. On the other hand, IoT environments are highly dynamic, unique and continuously subject to small configuration and patch changes making this approach no longer feasible due to the high overhead each certification process would introduce and the resource cost, especially in the manual preparation phase.
 
-As described in chapter \ref{cap2}, a certification process is usually made of four main steps: i) definition of the non-functional properties ii) definition of the certification target and of the mechanisms that will allow testing a given property iii) tests definition, aimed at collecting evidence proving the property iv) tests execution and evidence collection. So, for example, a test to collect evidence over the attribute \(x\) would be a pair \( (M_x, (c, R_e) ) \) where \(M_x\) is the mechanism the system offers to test the attribute \(x\), c is the code to execute, and \(R_e\) is the expected result of the test code execution; if the concrete results are close enough to the expected ones, the certificate can be released.
+As described in chapter \ref{cap2}, a certification process is usually made of four main steps: i) definition of the non-functional properties ii) definition of the certification target and of the mechanisms that will allow testing a given property iii) tests definition, aimed at collecting evidence proving the property iv) tests execution and evidence collection. So, for example, a test to collect evidence over the attribute \(x\) would be a pair \( \langle M_x, (c, R_e) \rangle \) where \(M_x\) is the mechanism the system offers to test the attribute \(x\), c is the code to execute, and \(R_e\) is the expected result of the test code execution; if the concrete results are close enough to the expected ones, the certificate can be released.
 
 The main issue of directly transferring such a process over IoT systems is the resources and time required to complete it, especially because there is almost no difference between a full certification and a recertification process in state-of-the-art techniques. Assuming that a brand new IoT system should undergo a full certification process, finding a lightweight and less strict solution is necessary to reduce the unease caused by recertification processes since their goal should only be to maintain most of the ``strength" the original certificate already possessed. Another variable such solution should deal with is the ``quantity" of changes the system went through before triggering the recertification process; combined with the wide variety of contexts and devices that an IoT system may be involved with, it makes it crucial to generalize the process.
 
@@ -50,7 +50,7 @@ Since the sum of the properties scores finally defines the certificate's strengt
 As for the state-of-the-art approaches, properties will still be modelled using attributes that define them at a lower level; more specifically, in the proposed approach, attributes define micro-properties, and are defined in a slightly different way from state-of-the-art schemes. 
 
 \begin{defn}
-An attribute \(a\) is defined as a pair \((\hat{a}, [value_{min}, value_{max}])\) where \(\hat{a}\) is the abstract attribute and \(value_{i}\) is a possible value of \(a\). 
+An attribute \(a\) is defined as a pair \(\langle \hat{a}, [value_{i}]\rangle\) where \(\hat{a}\) is the abstract attribute and \(value_{i}\) is a possible value of \(a\). 
 \end{defn}
 
 In other words, an attribute is now defined by its name and the list of values it can assume. We note that the range of possible values is considered sorted by relevance, from the less relevant to the most relevant. For example, the value of the response time of a device is more relevant the lower it is; contrary, the value of a storage size is more relevant the bigger it is.
@@ -183,7 +183,7 @@ The Ephemeral function returns the certification model needed for the certificat
 
 \begin{defn}
 The certification model is defined as 
-\(\mathcal{M} = \left ( \left ( P_1, P_2, P_3 \right ), \mathcal{E} \right )\) where \(P_i\) is a macro-property and \( \mathcal{E} \) is the evidence collection model.
+\(\mathcal{M} = \langle ( P_1, P_2, P_3 ), \mathcal{E} \rangle\) where \(P_i\) is a macro-property and \( \mathcal{E} \) is the evidence collection model.
 \end{defn}
 Namely, the macro-properties that compose the certification model \(\mathcal{M}\) are:
 \begin{itemize}
@@ -195,7 +195,7 @@ Namely, the macro-properties that compose the certification model \(\mathcal{M}\
 The framework should then be able to call the \textit{Execute} function using the certification model to deliver a new ephemeral certificate. Such certification model is computed at the begining of the process and it is bound to the target system.The execute function allows obtaining the new certificate for the updated system and automatically adds it to the set of system's certificates \(\mathcal{C}\).
 
  \begin{defn}
- Each certificate is then defined as a set of pairs \( (p, \{e_j\}) \), where \(p\) is a micro-property with the set of evidence supporting it \( (\{e_j\}) \).
+ Each certificate is then defined as three sets of pairs, one for each macro-property, \( (p, \{e_j\}) \), where \(p\) is a micro-property with the set of evidence supporting it \( (\{e_j\}) \).
  \end{defn}
  
 \begin{defn}
@@ -238,5 +238,3 @@ The first issue to address is the redundant re-certifications; specifically, it 
 However, such an approach may not have a faster execution time than the current state-of-the-art techniques simply because those techniques imply that the execution phase is composed only of pre-defined test executions over well-aimed and known mechanisms. Therefore, the goal of the proposed solution approach is not to have a faster execution time; instead, it is to have a shorter and more automated overall certification process that would also require considerably fewer resources. Furthermore, directly mapping the properties and attributes to the tests that demonstrate them will be crucial to establishing the values of such attributes. In other words, defining a series of tests are important to determine if a given property or attribute is present. However, to do so efficiently, it is still necessary to have a set of device or system information that would allow the framework to filter out tests that are known to fail.
 
 
-\subsection{Ephemeral Certificate Meaning}
-The volatility or ephemerality of this approach comes from the fact that tests must be light and fast, hence, they cannot be in-depth and ensure a long lasting functioning of the system. (todo?)
