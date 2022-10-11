@@ -80,7 +80,6 @@ The functionality includes symmetric encryption, public key cryptography, key ag
 \end{table}
 
 
-
 \subsection{Security Requirements}
 This paragraph identifies the security properties for the ToE, which are listed in Table \ref{tab:SR}; additionally, each property is associated with the relative attributes; for simplicity only the core attributes of the most important properties are listed below:
 
@@ -175,7 +174,7 @@ This section illustrates a complete walkthrough of the proposed certification sc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Vulnerabilities Assessment and Certification Walkthrough}
-\subsubsection{CVE-2014-022 - Trigger phase}
+\subsubsection{CVE-2014-0224 - Trigger phase}
 The \texttt{CVE-2014-0224} vulnerability allowed man-in-the-middle attackers \cite{conti2016survey} to use a zero-length master key in certain OpenSSL-to-OpenSSL communications and consequently hijack sessions or obtain sensitive information via a crafted TLS handshake, also known as ``CCS Injection" vulnerability \cite{CCS}; such a weakness represented a high risk for the users' privacy and the systems confidentiality macro-property.
 The bug that exposed the \texttt{CVE-2014-0224} vulnerability consisted of a bad implementation of the DTLS handshake protocol \cite{DTLS}, which allowed bad actors to defeat any encryption algorithm used effortlesly; hence, the influenced property is the ability to manage cryptographic keys securely. More specifically, the server entity was allowed to accept the ChangeCipherSpec (CCS) message at timings different from the intended one; hence, the attribute of the property that will be considered is the timing of the CCS message, which must satisfy two conditions to be accepted: i) there are no fragments from the handshake uncompleted (e.g. certificate validation) and ii) the next message received is Finished; the correct sequence of the messages is shown in Figure \ref{fig:handshake}.
 
@@ -199,7 +198,7 @@ Following the formalization of the \textit{Changes} function introduced in Secti
 
 After listing the impacted properties and attributes and making them available, the trigger signals a manual operator that the process requires attention.
 
-\subsubsection{CVE-2014-022 - Manual revision phase}
+\subsubsection{CVE-2014-0224 - Manual revision phase}
 An expert manual operator accesses the properties and attributes through the Changes function and deals with three main tasks:
 \begin{itemize}
     \item According to technological standards, the operator assigns a list of values to each attribute; in this example, they result formalized as follows:
@@ -215,7 +214,7 @@ An expert manual operator accesses the properties and attributes through the Cha
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsubsection{CVE-2016-779 - Trigger phase}
+\subsubsection{CVE-2016-7798 - Trigger phase}
 The \texttt{CVE-2016-7798} vulnerability affected the OpenSSL Ruby gem, which used the same initialization vector for multiple encryptions in a specific configuration; this allowed attackers to decipher encrypted messages easily \cite{vector}; this weakness, as the previous one, represented a high risk for the users' privacy and the systems confidentiality macro-property.
 The bug that exposed the second vulnerability (CVE-2016-7798) consisted of a bad implementation of the Ruby Openssl gem when using the AES algorithm in Galois/Counter Mode (GCM) \cite{gcm}, which allowed each initialization vector to be used multiple times; this resulted in weak encryption of data. The issue was caused by the initialization vector being set before the key when it should have been set after it. The attributes considered in this process are the encryption algorithm (AES-GCM), the satisfaction of the requirement of having a different initialization vector every time and the correlated certificate signing algorithm, which is also affected by this issue.
 
@@ -239,7 +238,7 @@ Following the formalization of the \textit{Changes} function introduced in Secti
 
 After listing the impacted properties and attributes and making them available through the \textit{Changes} function, the trigger signals a manual operator that the process requires attention.
 
-\subsubsection{CVE-2016-779 - Manual revision phase}
+\subsubsection{CVE-2016-7798 - Manual revision phase}
 An expert manual operator accesses the properties and attributes through the Changes function and deals with three main tasks:
 \begin{itemize}
     \item According to technological standards, the operator has to assign to each attribute a list of values; for this vulnerability, they result formalized as follows:
@@ -276,7 +275,7 @@ Finally, the Confidentiality macro-property \(P_1\) results formalized as follow
 In case the system results holding such requirements, then the certificate can be released.
 
 
-\subsubsection{CVE-2014-022 - Testing phase}
+\subsubsection{CVE-2014-0224 - Testing phase}
 The testing phase for \texttt{CVE-2014-0224} is composed of a single test, which, following the test formalization of Section \ref{evmodel}, results in: \(t1 = \langle p_1, (a_1, 1, c_1) \rangle\), where \(c_1\) represents the code and commands used for this test, detailed below. The server was tested with OpenSSL version 0.9.8y, known for being vulnerable to the CCS injection attack, and version 3.0.2, which implements the security patch to the vulnerability. Both server instances were initialized with the same commands: First, it is required to generate a new key and a certificate on the server that will be used to establish a secure SSL/TLS connection with the following command:
 ``openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes"; the command req is used to create a self-signed test certificate with the argument x509, and the other arguments are: i) \textbf{newkey rsa:4096} generates a new private RSA key of size 4096 bits, ii) \textbf{keyout} copies the generated key into a file named key.pem, iii) \textbf{out} copies the generated certificate into a file named cert.pem, iv) \textbf{days} specifies the validity duration of the certificate and v) \textbf{nodes} avoids encrypting the generated private key.
 Next, the server can be started using the following command:
@@ -326,7 +325,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.17 seconds
 The test results show that the server running OpenSSL version 3.0.2 is no longer vulnerable to the CCS injection attack, while, with version 0.9.8y, the script highlights the presence of the vulnerability.
 
 
-\subsubsection{CVE-2016-779 - Testing phase}
+\subsubsection{CVE-2016-7798 - Testing phase}
 The testing phase for \texttt{CVE-2016-7798} is composed of two tests, which, following the test formalization of Section \ref{evmodel}, result in: \(t_2 = \langle p_2, (a_2, \texttt{sha-256WithRSAEncryption}, c_2) \rangle\) and \(t_3 = \langle p_3, \{(a_3, 1, c_3), (a_4, 256, c_4)\}  \rangle\), where \(c_2, c_3\) and \(c_4\) represent the code used for this test, detailed below.
 
 The test for the \texttt{sha-256WithRSAEncryption} signature algorithm (\(t_2\)) was executed using a client-server setup with the Ruby language; the scripts used are shown in the appendix \ref{sig}. This test aimed to verify the integrity of the system's (server) certificate when generated using the \texttt{sha-256WithRSAEncryption} algorithm. The test's steps are as follows: i) the client connects to the server and sends an \textit{`HELLO'} message, ii) the server accepts the connection and replies to the \textit{`HELLO'} message with its certificate, iii) the client receives the server's certificate and extracts the server's public key from it, iv) the client uses the server's public key to encrypt a document and sends the result to the server, v) the server receives the encrypted document and decrypts it with its private key, vi) the server uses its private key to sign the decrypted document and sends the result to the client and vii) the client receives the signed document and verifies the authenticity of the signature usign the server's public key; if such verification succeeds the test is passed.
@@ -487,12 +486,12 @@ The output confirms the server's capability of decrypting messages with the \tex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% END %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Results}
 The results from the tests over the micro-properties detailed above are positive; following the methodology introduced in Chapter \ref{cap3}, it is now possible to formally express the evidence collection model \(\mathcal{E}\), the certification model \(\mathcal{M}\) and the final certificate \(\mathcal{C}\). The evidence collection model E is obtainable from the tests and properties introduced in this section, and it is: 
-\[ \mathcal{E} = \{ \{t_1\}_{p_1}, \{t_2\}_{p_2}, \{t_3\}_{p_3} \}_{Confidentiality}\]
+\[ \mathcal{E} = \{ \{t_1, t_2\}_{p_1}, \{t_3\}_{p_2}, \{t_4\}_{p_3} \}_{Confidentiality}\]
 The Ephemeral function allows computing the certification model in the following way:
 \[\mathcal{M} = \langle P_1, \mathcal{E} \rangle\]
 
 Finally, the new certificate is returned from the \textit{Execute} function, expressed as follows: 
 
-\[Execute(\mathcal{M}) \rightarrow \mathcal{C} \cup \{(p_1, e_1), (p_2, e_2), (p_3, e_3)\}\]
+\[Execute(\mathcal{M}) \rightarrow \mathcal{C} \cup \{(p_1, \{e_1, e_2\}), (p_2, \{e_3\}), (p_3, \{e_4\})\}\]
 
 where \(e_j\) is a representation of the positive result obtained from the test \(t_j\); the obtained certificate will now complement the set of certificates previously obtained (\(\mathcal{C}\)).
