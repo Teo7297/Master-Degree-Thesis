@@ -1,0 +1,200 @@
+\documentclass[hidelinks, a4paper, 12pt]{report}
+%    \renewcommand{\baselinestretch}{1.6}      % interline spacing
+%
+% \includeonly{}
+%
+%			PREAMBOLO
+%
+\usepackage[pdfa]{hyperref}
+\usepackage[a-2u]{pdfx}  
+
+\usepackage[a4paper]{geometry}
+\usepackage{amssymb,amsmath,amsthm}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{epsfig}
+\usepackage[english]{babel}
+\usepackage{setspace}
+\usepackage{tesi}
+\usepackage{listings}
+\usepackage{xcolor,colortbl}
+
+% per definitions
+\usepackage{amsthm}
+\theoremstyle{definition}
+\newtheorem{defn}{Definition} % definition numbers are dependent on theorem numbers
+\newtheorem{example}{Example} % definition numbers are dependent on theorem numbers
+
+
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+
+% per le accentate
+\usepackage[utf8]{inputenc}
+%
+\newtheorem{myteor}{Teorema}[section]
+%
+\newenvironment{teor}{\begin{myteor}\sl}{\end{myteor}}
+%
+%Path relative to the main .tex file 
+\graphicspath{ {./images/} }
+%
+%			TITOLO
+%
+\begin{document}
+\title{Design and development of an assurance methodology for security certifications in highly dynamic architectures}
+\author{Matteo CAVAGNINO}
+\dept{Corso di Laurea in Informatica} 
+\anno{2021-2022}
+\matricola{961707}
+\relatore{Prof. Claudio A. ARDAGNA}
+\correlatore{Dr. Nicola BENA}
+%
+%        \submitdate{month year in which submitted to GPO}
+%		- date LaTeX'd if omitted
+%	\copyrightyear{year degree conferred (next year if submitted in Dec.)}
+%		- year LaTeX'd (or next year, in December) if omitted
+%	\copyrighttrue or \copyrightfalse
+%		- produce or don't produce a copyright page (false by default)
+%	\figurespagetrue or \figurespagefalse
+%		- produce or don't produce a List of Figures page
+%		  (false by default)
+%	\tablespagetrue or \tablespagefalse
+%		- produce or don't produce a List of Tables page
+%		  (false by default)
+% 
+\beforepreface % Frontespizio
+%
+%			DEDICA
+\prefacesection{}
+     {\hfill \Large {\sl Ai miei genitori, a mio fratello, alla mia famiglia, grazie ai quali sono la persona che sono.
+     
+     \vspace{1em}\noindent Ad Ivan, sempre presente con i suoi consigli e grazie a cui sono riuscito a scrivere e consegnare questa tesi.
+     
+     \vspace{1em}\noindent A Benedetta, che mi supporta e sopporta da più di quattro anni, senza la quale sarei ancora bloccato all'esame di logica del secondo anno; non potrò mai ringraziarti abbastanza per tutto il tuo sostegno durante questi indimenticabili anni. Ti amo.
+     
+     }}
+% 
+%			PREFAZIONE
+%
+\prefacesection{Preface}
+\input{Preface}
+%
+%
+%			ORGANIZZAZIONE
+\section*{Organization of the thesis}
+\label{organizzazione}
+The thesis is organized as follows:
+\begin{description}
+    \item[Chapter 1] presents an introduction to the context of the thesis, describing a brief overview of today's dynamic technologies and the new assurance techniques, and introducing the approach taken in the following chapters of the thesis work.
+
+    \item[Chapter 2] illustrates an in-depth overview of the modern architecture paradigms, starting from the Cloud and moving to more dynamic and decentralized systems like Edge and Internet of Things; furthermore, it follows a detailed summary of the modern standards and research in the assurance and certification field of such architectures, leaving space for a curated description of the problem, our work aims to solve.
+
+    \item[Chapter 3] explains the proposed methodology to develop the proposed solution, introducing the formal descriptions and models of the certification elements that compose the final scheme. Compared to the traditional certification schemes, our proposal introduces two new components: the scoring system, a feature that allows guiding the certification process automatically, and the trigger, a component in charge of monitoring the changes carried to the system and signal manual operators in case such changes should affect any security property. Furthermore, this chapter presents adjusted models for the remaining components, such as properties, attributes, tests and certificates, allowing for better integration in the certification scheme. Finally, this chapter shows how such components should be operated and the order of procedures intended for the expected results, leading to the release of a partial certificate complementing the already possessed certificates and substituting the invalidated portions.
+
+    \item[Chapter 4] exemplifies a complete procedure with the use of the proposed certification scheme. The process is executed over a real-world-inspired scenario, consisting of a web service implementing open-source OpenSSL. In this chapter, we show how such a target could be firstly certified using a traditional certification scheme (e.g. Common Criteria) and then, after two security patches, how the certificate could be maintained using our proposed scheme, drastically reducing the redundancy of a new certification process from scratch.
+
+    \item[Chapter 5] finally concludes this thesis' work, illustrating the results achieved and giving inspiration on how to improve and develop the proposed certification scheme further.
+    
+    \item[Appendix A] lists all non-functional security requirements that IoT system manufacturers should consider when developing their infrastructures; such requirements are officially recommended by the National Institute of Standards and Technology (NIST) \cite{nist_req}.
+    
+    \item[Appendix B] presents the code used in Chapter 4 for testing the proposed certification scheme's evaluation target.
+\end{description}
+%
+%			RINGRAZIAMENTI
+%
+\prefacesection{Acknowledgements}
+
+I would like to thank my supervisor Prof. Claudio Ardagna and my co-supervisor, Dr Nicola Bena, who provided me with encouragement and patience throughout the duration of this project.
+
+I also wish to thank my family and friends for supporting me throughout my entire academic journey.
+
+Last but not least, I’m extremely grateful to my girlfriend Benedetta, that never wavered in her support and helped me achieve these results.
+\begin{flushright}
+\textit{Matteo Cavagnino}
+\end{flushright}
+\afterpreface
+% 
+% 
+%			CAPITOLO 1: Introduzione
+\chapter{Introduction}
+\label{cap1}                        % riferire al capitolo con \ref{cap1}
+\input{Introduction}
+
+
+
+\chapter{State Of The Art}
+\label{cap2}
+\input{State_of_the_art/StateOfTheArt}
+
+
+\chapter{Methodology}
+\label{cap3}
+\input{Methodology/Methodology}
+
+\chapter{Experiments}
+\label{cap4}
+\input{Experiments/Experiments}
+
+\chapter{Conclusions}
+\label{cap5}
+\input{Conclusion}
+
+\appendix
+\chapter{Properties Taxonomy}
+\label{taxonomy}
+\input{State_of_the_art/Prop-Taxonomy}
+
+\chapter{Scripts Used For Testing}
+\section{CCS Injection Nmap Script}
+\label{ccs}
+\lstinputlisting[basicstyle=\footnotesize]{Files/ssl-ccs-injection}
+
+\section{CVE-2016-779 Ruby Scripts}
+\label{IV}
+\textbf{Server}
+\label{iv_server}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/IV/server.rb}
+\textbf{Client}
+\label{iv_client}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/IV/client.rb}
+
+\newpage
+\section{Signature Algorithm Ruby Scripts}
+\label{sig}
+\textbf{SocketIO}
+\label{sig_io}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/socketIO.rb}
+\textbf{Server}
+\label{sig_server}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/server.rb}
+\textbf{Client}
+\label{sig_client}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/client.rb}
+
+\section{AES-256-GCM Algorithm Ruby Scripts}
+\label{aes}
+\textbf{Server}
+\label{aes_server}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/server.rb}
+\textbf{Client}
+\label{aes_client}
+\lstinputlisting[basicstyle=\footnotesize, language=Ruby]{Files/Sig/client.rb}
+
+%
+%			BIBLIOGRAFIA
+%
+\begin{thebibliography}{00}
+
+\input{BibItems}
+
+\end{thebibliography}
+% 
+\end{document}
+
+
+ 
